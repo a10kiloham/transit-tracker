@@ -20,7 +20,8 @@ While we will be using this display as a countdown clock, you could customize it
       - [Slicer settings](#slicer-settings)
   - [Part 4: Assemble the frame](#part-4-assemble-the-frame)
   - [You're done!](#youre-done)
-- [License](#license)
+- [Connecting to Home Assistant](#connecting-to-home-assistant)
+- [Advanced Customization](#advanced-customization)
 
 ## Materials
 
@@ -158,6 +159,18 @@ Plug the board in to make sure everything still works. If it does, you're all se
 
 You can now mount your display anywhere you please. There are mounting holes on the back of the frame so you can easily mount to the wall with screws. I personally mount mine using 3M Command strips, but you could also place it directly on a desk or other table.
 
-## License
+# Appendix
+
+## Connecting to Home Assistant
+
+The Transit Tracker firmware is based on ESPHome and is compiled with some configuration options to make it easy to connect to Home Assistant. Once the device is connected to your Wi-Fi network, Home Assistant should automatically prompt you to add it as an ESPHome integration. If you do not get prompted, you can [add it manually by IP](https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome).
+
+Once added, the device exposes the ability to control the display's brightness as a light entity, and a button entity to restart the device. You can use these entities in your automations, for example, to turn down the display's brightness at night so you aren't blinded when you wake up.
+
+## Advanced Customization
+
+You can customize the firmware even further if you want to display something else in addition to arrival times—or replace it entirely. It's up to you! Check out the [advanced guide](./advanced.md) for more information.
+
+# License
 
 <p xmlns:cc="http://creativecommons.org/ns#" >This work (the guide and the design for the 3D-printed frame) is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p>
