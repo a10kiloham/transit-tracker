@@ -48,8 +48,8 @@ display:
         lambda: |-
           int x = it.get_width() / 2;
           int y = it.get_height() / 2;
-          it.strftime(x, y / 2, id(pixolletta), COLOR_ON, TextAlign::CENTER, "%r", id(homeassistant_time).now());
-          it.strftime(x, y + (y / 2), id(pixolletta), COLOR_ON, TextAlign::CENTER, "%B %d, %Y", id(homeassistant_time).now());
+          it.strftime(x, y / 2, id(pixolletta), COLOR_ON, TextAlign::CENTER, "%r", id(sntp_time).now());
+          it.strftime(x, y + (y / 2), id(pixolletta), COLOR_ON, TextAlign::CENTER, "%B %d, %Y", id(sntp_time).now());
 
 interval:
   - interval: 5s
