@@ -1,8 +1,5 @@
 # Transit Tracker Build Guide
 
-> [!NOTE]  
-> This guide is a work in progress. You can still follow it, but some details may be missing or incomplete.
-
 This guide will walk you through building an ESP32-S3-based countdown clock which shows the real-time arrival times for any public transit route of your choice. By the end of this guide, you will have something that looks like this:
 
 ![](finished.jpg)
@@ -107,7 +104,7 @@ If your printer is a "bed slinger" design, the long side should be parallel to t
 
 ##### Slicer settings
 
-Layer height should be 0.2mm or less for good fit and finish.
+Since this is a larger print with few fine details, I recommend using a 0.6mm nozzle with your slicer's adaptive/variable layer height feature enabled. This will give you a reasonably short print time while still allowing finer details where needed, such as around the mounting holes.
 
 To ensure dimensional accuracy where the displays are mounted, change your slicer's settings so that the z-seam is inside the frame as shown below.
 
