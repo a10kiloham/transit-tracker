@@ -34,9 +34,11 @@ You will also need a 3D printer with a build volume of at least 30×115×210mm t
 
 ### Part 1: Wire the displays
 
-First, remove the protective tape from the power terminal standoffs on the front of the Matrix Portal if you haven't already. Then, using the included screws, attach the power cable to the terminals. Make sure the red wire is connected to +5V and the black one is connected to GND.
+Take out both LED matrix displays from their boxes. Inside the boxes there will also be a bag of various accessories and cables. From one of these bags, take out the power cable (black and red wires) and the 2x8 IDC cable (gray wires).
 
-Then connect the Matrix Portal to one of the displays using the 2x8 connector on the back of the display.
+Remove the protective tape from the power terminal standoffs on the front of the Matrix Portal if you haven't already. Then, using the included screws, attach the power cable to the terminals. Make sure the red wire is connected to +5V and the black one is connected to GND.
+
+Connect the Matrix Portal to one of the displays using the 2x8 connector on the back of the display.
 
 Due to the plastic nub on the back of the display, the board may not sit flush with it. This is normal. Press it in as much as you can without forcing it.
 
@@ -69,9 +71,9 @@ If the displays don't come to life:
 Next, we will flash the Transit Tracker firmware to the Matrix Portal board.
 
 1. Plug the board into your computer.
-2. Hold the "Boot" button on the board and press the "Reset" button at the same time. Let go of both buttons. The board should now be in flashing mode.
-3. Visit the [configuration website](https://countdown-config.horner.tj/flash) and follow the flashing instructions.
-4. Once flashed and connected to Wi-Fi, you can exit the flashing dialogue and press "Next: Configuration". Make sure the board and your computer are on the same network.
+2. Hold the "Boot" button on the board. While continuing to hold "Boot", press "Reset" at the same time, then let go of both buttons. The board is now in flashing mode.
+3. Visit the [configuration website](https://countdown-config.horner.tj/flash), press "Prepare new device", then follow the instructions.
+4. Once flashed and connected to Wi-Fi, you can exit the flashing dialog and press "Next: Configuration". Make sure the board and your computer are on the same network.
 5. Go to "Select feed" and choose the one that corresponds to your transit agency.
 6. Go to "Select routes" and find the stops/routes you are interested in, then press "Save".
 7. You can customize various options in "Customize styles".
