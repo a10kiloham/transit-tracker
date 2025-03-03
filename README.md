@@ -72,7 +72,7 @@ Next, we will flash the Transit Tracker firmware to the Matrix Portal board.
 
 1. Plug the board into your computer.
 2. Hold the "Boot" button on the board. While continuing to hold "Boot", press "Reset" at the same time, then let go of both buttons. The board is now in flashing mode.
-3. Visit the [configuration website](https://countdown-config.horner.tj/flash), press "Prepare new device", then follow the instructions.
+3. Visit the [configuration website](https://countdown-config.horner.tj), press "Prepare new device", then follow the instructions.
 4. Once flashed and connected to Wi-Fi, you can exit the flashing dialog and press "Next: Configuration". Make sure the board and your computer are on the same network.
 5. Go to "Select feed" and choose the one that corresponds to your transit agency.
 6. Go to "Select routes" and find the stops/routes you are interested in, then press "Save".
@@ -162,7 +162,7 @@ You can now mount your display anywhere you please. There are mounting holes on 
 
 ## Connecting to Home Assistant
 
-The Transit Tracker firmware is based on ESPHome and is compiled with some configuration options to make it easy to connect to Home Assistant. Once the device is connected to your Wi-Fi network, Home Assistant should automatically prompt you to add it as an ESPHome integration. If you do not get prompted, you can [add it manually by IP](https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome).
+The Transit Tracker firmware is based on ESPHome and is compiled with some configuration options to make it easy to connect to Home Assistant. Once the device is connected to your Wi-Fi network, Home Assistant should automatically prompt you to add it as an ESPHome integration. If you aren't prompted, you can [add it manually by IP](https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome).
 
 Once added, the device exposes the ability to control the display's brightness as a light entity, and a button entity to restart the device. You can use these entities in your automations, for example, to turn down the display's brightness at night so you aren't blinded when you wake up.
 
