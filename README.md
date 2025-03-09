@@ -72,12 +72,19 @@ Next, we will flash the Transit Tracker firmware to the Matrix Portal board.
 
 1. Plug the board into your computer.
 2. Hold the "Boot" button on the board. While continuing to hold "Boot", press "Reset" at the same time, then let go of both buttons. The board is now in flashing mode.
-3. Visit the [configuration website](https://countdown-config.horner.tj), press "Prepare new device", then follow the instructions.
-4. Once flashed and connected to Wi-Fi, you can exit the flashing dialog and press "Next: Configuration". Make sure the board and your computer are on the same network.
-5. Go to "Select feed" and choose the one that corresponds to your transit agency.
-6. Go to "Select routes" and find the stops/routes you are interested in, then press "Save".
-7. You can customize various options in "Customize styles".
-8. Once you are done, press "Save config" to push the configuration to the board.
+3. Visit the [configuration website](https://countdown-config.horner.tj) and press "Prepare new device".
+4. Press "Flash Firmware".
+5. Select the Transit Tracker from the list of devices. If you are having a hard time determining which it is, repeat step 2 and look for the device that appears in the list.
+6. Press "Install Transit Tracker Firmware".
+7. Check "Erase device", then press "Next", then "Install".
+8. Once you see "Installation complete", press the reset button on the board.
+9. Press "Next" to connect to Wi-Fi.
+10. Enter your Wi-Fi credentials and press "Connect".
+11. Once flashed and connected to Wi-Fi, you can exit the flashing dialog and press "Next: Configuration". Make sure the board and your computer are on the same network.
+12. Go to "Select feed" and choose the one that corresponds to your transit agency.
+13. Go to "Select routes" and find the stops/routes you are interested in, then press "Save".
+14. You can customize various options in "Customize styles".
+15. Once you are done, press "Save config" to push the configuration to the board.
 
 ### Part 3: 3D print the frame
 
