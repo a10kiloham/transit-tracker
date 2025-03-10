@@ -6,6 +6,8 @@ This guide will walk you through building an ESP32-S3-based countdown clock whic
 
 While we will be using this display as a countdown clock, you could customize it with your own firmware and display anything you'd like; however, that's out of scope for this guide.
 
+If you end up building one and want to share, make sure to tag us on Bluesky [@eastsideurbanism.org](https://bsky.app/profile/eastsideurbanism.org) and use #TransitTracker!
+
 - [Materials](#materials)
 - [Instructions](#instructions)
   - [Part 1: Wire the displays](#part-1-wire-the-displays)
@@ -35,7 +37,7 @@ While we will be using this display as a countdown clock, you could customize it
 
 You can buy most of these parts directly from Adafruit [using this wishlist](http://www.adafruit.com/wishlists/604463). Just press "Add All to Cart" at the bottom and check out! The only thing not included in the wishlist is the screws.
 
-You will also need a 3D printer with a build volume of at least 30×115×210mm to print the frame. If you don't have one, you may be able to find one at your local library or university, or get the frame printed from a service online.
+To print the frame, a 3D printer with at least a 30×115×210mm build volume is required. If you don't have one, you may be able to find one at your local library or university, or get the frame printed from a service online.
 
 ## Instructions
 
@@ -171,6 +173,8 @@ Plug the board in to make sure everything still works. If it does, you're all se
 ### You're done!
 
 You can now mount your display anywhere you please. There are mounting holes on the back of the frame so you can easily mount to the wall with screws. I personally mount mine using 3M Command strips, but you could also place it directly on a desk or other table.
+
+We would love to see your finished product! You can share photos by tagging us on Bluesky [@eastsideurbanism.org](https://bsky.app/profile/eastsideurbanism.org) with the hashtag #TransitTracker.
 
 # Appendix
 
