@@ -22,11 +22,18 @@ While we will be using this display as a countdown clock, you could customize it
 
 ## Materials
 
-- 1 × [Adafruit Matrix Portal S3](https://www.adafruit.com/product/5778)
-- 2 × [Waveshare RGB-Matrix-P2.5-64x32](https://www.waveshare.com/rgb-matrix-p2.5-64x32.htm)
-- 12 × M3x8mm machine screws (you can get these at your local hardware store)
-- 1 × USB power supply, at least 5V 3A
+- 1 × Adafruit Matrix Portal S3
+  - [Buy at Adafruit]((https://www.adafruit.com/product/5778))
+- 2 × Waveshare RGB-Matrix-P2.5-64x32
+  - [Buy at Waveshare](https://www.waveshare.com/rgb-matrix-p2.5-64x32.htm)
+  - [Buy at Adafruit](https://www.adafruit.com/product/5036)
+- 12 × M3x8mm machine screws
+  - [Buy at McMaster](https://www.mcmaster.com/92005A118)
+  - You can also find these at your local hardware store
+- 1 × USB power supply, at least 5V/3A recommended _(but you can probably get away with 5V/2A)_
 - 1 × USB-C cable, preferably right-angle
+
+You can buy most of these parts directly from Adafruit [using this wishlist](http://www.adafruit.com/wishlists/604463). Just press "Add All to Cart" at the bottom and check out! The only thing not included in the wishlist is the screws.
 
 You will also need a 3D printer with a build volume of at least 30×115×210mm to print the frame. If you don't have one, you may be able to find one at your local library or university, or get the frame printed from a service online.
 
