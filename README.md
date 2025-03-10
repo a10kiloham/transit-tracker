@@ -23,7 +23,7 @@ While we will be using this display as a countdown clock, you could customize it
 ## Materials
 
 - 1 × Adafruit Matrix Portal S3
-  - [Buy at Adafruit]((https://www.adafruit.com/product/5778))
+  - [Buy at Adafruit](https://www.adafruit.com/product/5778)
 - 2 × Waveshare RGB-Matrix-P2.5-64x32
   - [Buy at Waveshare](https://www.waveshare.com/rgb-matrix-p2.5-64x32.htm)
   - [Buy at Adafruit](https://www.adafruit.com/product/5036)
