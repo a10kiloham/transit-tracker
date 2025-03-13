@@ -2,6 +2,9 @@ esphome:
   name: transit-tracker
   friendly_name: Transit Tracker
   name_add_mac_suffix: true
+  project:
+    name: "Eastside Urbanism.Transit Tracker"
+    version: "1.1.0"
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -27,9 +30,18 @@ improv_serial:
 api:
   reboot_timeout: 0s
 
+http_request:
+  verify_ssl: false
+
 ota:
+  - platform: http_request
   - platform: esphome
     password: ""
+
+update:
+  - platform: http_request
+    name: Firmware Update
+    source: https://transit-tracker.eastsideurbanism.org/firmware/manifest.json
 
 button:
   - platform: restart
@@ -119,6 +131,13 @@ script:
           transition_length: 0.1s
 
 binary_sensor:
+  - platform: template
+    id: both_buttons
+    lambda: |-
+      return id(up_button).state && id(down_button).state;
+    on_press:
+      then:
+        - display.page.show_next: matrix
   - platform: gpio
     id: up_button
     pin: &button_pin_cfg
@@ -172,8 +191,22 @@ display:
     clock_phase: false
     i2sspeed: HZ_20M
     brightness: 255
-    lambda: |-
-      id(tracker).draw_schedule();
+    pages:
+      - id: transit_schedule
+        lambda: |-
+          id(tracker).draw_schedule();
+      - id: ip_address_page
+        lambda: |-
+          int x = it.get_width() / 2;
+          int y = it.get_height() / 2;
+
+          auto ip_addresses = ::esphome::network::get_ip_addresses();
+          if (ip_addresses.empty()) {
+            it.printf(x, y, id(pixolletta), COLOR_ON, TextAlign::CENTER, "No IP Address");
+            return;
+          }
+
+          it.printf(x, y, id(pixolletta), COLOR_ON, TextAlign::CENTER, "%s", ip_addresses[0].str().c_str());
 
 font:
   - file: "fonts/Pixolletta8px.ttf"

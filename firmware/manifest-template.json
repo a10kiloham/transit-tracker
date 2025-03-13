@@ -1,0 +1,22 @@
+{
+  "name": "Transit Tracker Firmware",
+  "version": "$VERSION",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "$FACTORY_BIN_PATH",
+          "offset": 0
+        }
+      ],
+      "ota": {
+        "md5": "$OTA_BIN_MD5",
+        "path": "$OTA_BIN_PATH",
+        "release_url": "$OTA_RELEASE_URL"
+      }
+    }
+  ]
+}
