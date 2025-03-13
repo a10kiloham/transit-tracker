@@ -75,10 +75,6 @@ const config: Config = {
               label: "Build Guide",
               to: "/docs/build-guide",
             },
-            {
-              label: "User Manual",
-              to: "/docs/user-manual",
-            },
           ],
         },
         {
