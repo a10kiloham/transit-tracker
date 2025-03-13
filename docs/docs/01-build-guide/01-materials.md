@@ -16,4 +16,4 @@ To follow this build guide, you'll need the following parts:
 
 You can buy most of these parts directly from Adafruit [using this wishlist](https://www.adafruit.com/wishlists/604463). Just press "Add All to Cart" at the bottom and check out! The only thing not included in the wishlist is the screws.
 
-If you plan on 3D printing your own frame, a printer with at least a 30×115×210mm build volume is required. If you don't have one, you may be able to find one at your local library or university, or get the frame printed from a service online.
+If you plan on 3D printing your own frame, a printer with at least a 30×115×210mm build volume is required. Otherwise, you may be able to find one at your local library or university, get the frame printed from a service online, or maybe a friend has one!
