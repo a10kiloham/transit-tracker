@@ -98,7 +98,6 @@ export default function Home(): ReactNode {
 
   return (
     <Layout
-      title="Transit Tracker"
       description="Transit Tracker is a DIY customizable public transit arrivals board for your home."
     >
       <HomepageHeader />
