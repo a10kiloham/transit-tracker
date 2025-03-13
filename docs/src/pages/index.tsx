@@ -53,20 +53,24 @@ function BlueskyEmbeds(): ReactNode {
       rkey: "3ljwcfaufc22e",
     },
     {
-      did: "did:plc:gq6wthafyehp4gizacwd6x5d",
-      rkey: "3ljyacacl6k2j",
-    },
-    {
       did: "did:plc:pmqv7bhxcvbyshp3gqrtfbsr",
       rkey: "3ljyg6s623c2l",
     },
     {
-      did: "did:plc:6vatl6lhsv3ninhf7n4ssria",
-      rkey: "3ljyge6jvvc2x",
+      did: "did:plc:rwg72ziv7y3vwe6mt6qbejbb",
+      rkey: "3ljyeozobd22w",
+    },
+    {
+      did: "did:plc:gq6wthafyehp4gizacwd6x5d",
+      rkey: "3ljyacacl6k2j",
     },
     {
       did: "did:plc:mc5hqf754fb2ls6k2dyjb4jw",
       rkey: "3ljzvsd4q3q2k",
+    },
+    {
+      did: "did:plc:6vatl6lhsv3ninhf7n4ssria",
+      rkey: "3ljyge6jvvc2x",
     },
   ]
 
@@ -94,12 +98,8 @@ function BlueskyEmbeds(): ReactNode {
 }
 
 export default function Home(): ReactNode {
-  const { siteConfig } = useDocusaurusContext()
-
   return (
-    <Layout
-      description="Transit Tracker is a DIY customizable public transit arrivals board for your home."
-    >
+    <Layout description="Transit Tracker is a DIY customizable public transit arrivals board for your home.">
       <HomepageHeader />
       <main>
         <BlueskyEmbeds />
