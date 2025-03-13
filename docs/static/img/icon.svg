@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="60"
+   height="60"
+   viewBox="0 0 60 60"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
+   sodipodi:docname="icon.svg"
+   inkscape:export-filename="favicon.png"
+   inkscape:export-xdpi="57.599998"
+   inkscape:export-ydpi="57.599998"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     showguides="false"
+     inkscape:zoom="4.7572176"
+     inkscape:cx="-9.8797247"
+     inkscape:cy="40.359726"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="200"
+       originy="200"
+       spacingx="10"
+       spacingy="10"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="1"
+       dotted="false"
+       gridanglex="30"
+       gridanglez="30"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient56"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#00A700;stop-opacity:1;"
+         offset="0.55576921"
+         id="stop56" />
+      <stop
+         style="stop-color:#00A700;stop-opacity:0;"
+         offset="0.89615387"
+         id="stop57" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient56"
+       id="radialGradient57"
+       cx="55"
+       cy="5"
+       fx="55"
+       fy="5"
+       r="5"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:url(#radialGradient57);fill-opacity:1;stroke-width:10;stroke-linecap:round;stroke-linejoin:round"
+       id="path1-1"
+       cx="55"
+       cy="5"
+       r="5" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path1-1"
+       id="use41"
+       transform="translate(-10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use41"
+       id="use42"
+       transform="translate(-10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use42"
+       id="use43"
+       transform="translate(-10,10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use43"
+       id="use44"
+       transform="translate(-10,10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use44"
+       id="use45"
+       transform="translate(-10,10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use45"
+       id="use46"
+       transform="translate(0,10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use46"
+       id="use47"
+       transform="translate(0,10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use47"
+       id="use48"
+       transform="translate(20)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use48"
+       id="use49"
+       transform="translate(0,-10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use49"
+       id="use50"
+       transform="translate(10,-10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use50"
+       id="use51"
+       transform="translate(10,-10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use51"
+       id="use52"
+       transform="translate(10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use52"
+       id="use53"
+       transform="translate(0,20)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use53"
+       id="use54"
+       transform="translate(0,10)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use54"
+       id="use55"
+       transform="translate(-10)" />
+  </g>
+</svg>

@@ -1,4 +1,4 @@
-# Advanced Guide
+# Advanced Customization
 
 Since the firmware for the Transit Tracker is based on [ESPHome](https://esphome.io/), it's possible to heavily customize it to display just about anything you'd like. It's recommended to already be familiar with ESPHome if you'd like to follow this guide. If you run into any issues or have questions, you can pop into the [ESPHome Discord](https://discord.gg/KhAMKrd) where many community members are happy to help out.
 
@@ -10,7 +10,7 @@ You should have ESPHome set up through one of the methods in the "Getting starte
 
 ## Copy the stock config
 
-Once you have a configuration created, you can copy the [stock config](./firmware/transit-tracker.yaml) and paste it into your configuration file. This will give you a good starting point to work from.
+Once you have a configuration created, you can copy the [stock config](https://github.com/EastsideUrbanism/transit-tracker/blob/main/firmware/transit-tracker.yaml) and paste it into your configuration file. This will give you a good starting point to work from.
 
 The main section of interest is the `display:` section, which is where the display's rendering is defined. ESPHome supports a powerful "pages" system that allows you to define multiple pages of content that can be cycled through. This can then be controlled at runtime using any method you wish: buttons, on a timer, via an automation, etc.
 
