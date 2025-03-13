@@ -29,6 +29,10 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
+.full-height {
+  height: calc(100vh - var(--ifm-navbar-height));
+}
+
 @font-face {
   font-family: "Pixolletta8px";
   src:

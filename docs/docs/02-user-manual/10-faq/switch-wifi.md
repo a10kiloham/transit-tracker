@@ -5,8 +5,8 @@ You can switch the Wi-Fi network your Transit Tracker connects to in a few diffe
 ## USB
 
 1. Connect your Transit Tracker to a computer with a Chromium browser (Firefox and Safari do not support this process).
-2. Visit the [flashing page](https://countdown-config.horner.tj/flash).
-3. Click the "Flash Firmware" button.
+2. Visit the [configurator](/configurator).
+3. Click "Prepare new device" then the "Flash Firmware" button.
 4. Select your Transit Tracker from the list. It will usually be listed as something like "USB JTAG/serial debug unit".
 5. Click the "Connect" button.
 6. Click "Connect to Wi-Fi" or "Change Wi-Fi".

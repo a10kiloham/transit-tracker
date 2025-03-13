@@ -59,6 +59,11 @@ const config: Config = {
           label: "Documentation",
         },
         {
+          to: "configurator",
+          label: "Configurator",
+          position: "left",
+        },
+        {
           href: "https://github.com/EastsideUrbanism/transit-tracker",
           label: "GitHub",
           position: "right",

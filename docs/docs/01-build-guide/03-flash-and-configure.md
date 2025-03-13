@@ -6,7 +6,7 @@ Next, we will flash the Transit Tracker firmware to the Matrix Portal board, con
 
 1. Plug the board into your computer.
 2. Hold the "Boot" button on the board. While continuing to hold "Boot", press "Reset" at the same time, then let go of both buttons. The board is now in flashing mode.
-3. Visit the [configuration website](https://countdown-config.horner.tj) and press "Prepare new device".
+3. Go to the [configurator](/configurator) and press "Prepare new device".
 4. Press "Flash Firmware".
 5. Select the Transit Tracker from the list of devices. It should be named something like "USB JTAG/serial debug unit". If it's something else, you may need to repeat step 2.
 6. Press "Install Transit Tracker Firmware".
