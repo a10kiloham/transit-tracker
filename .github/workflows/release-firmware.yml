@@ -1,4 +1,6 @@
 name: Release Stock Firmware
+permissions:
+  contents: write
 on:
   release:
     types: [created]
@@ -36,9 +38,6 @@ jobs:
     name: Generate Release Manifest
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      contents: write
-
     steps:
       - uses: actions/checkout@v4
         with:
