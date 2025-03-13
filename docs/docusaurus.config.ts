@@ -8,7 +8,7 @@ const config: Config = {
   favicon: "img/favicon.png",
 
   url: "https://eastsideurbanism.github.io",
-  baseUrl: "/",
+  baseUrl: "/transit-tracker/",
 
   organizationName: "EastsideUrbanism", // Usually your GitHub org/user name.
   projectName: "transit-tracker", // Usually your repo name.
