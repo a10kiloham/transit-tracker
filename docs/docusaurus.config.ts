@@ -7,8 +7,8 @@ const config: Config = {
   tagline: "DIY public transit arrivals board",
   favicon: "img/favicon.png",
 
-  url: "https://eastsideurbanism.github.io",
-  baseUrl: "/transit-tracker/",
+  url: "https://transit-tracker.eastsideurbanism.org",
+  baseUrl: "/",
 
   organizationName: "EastsideUrbanism", // Usually your GitHub org/user name.
   projectName: "transit-tracker", // Usually your repo name.
