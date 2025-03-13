@@ -1,4 +1,4 @@
-# Advanced Customization
+# Firmware Customization
 
 Since the firmware for the Transit Tracker is based on [ESPHome](https://esphome.io/), it's possible to heavily customize it to display just about anything you'd like. It's recommended to already be familiar with ESPHome if you'd like to follow this guide. If you run into any issues or have questions, you can pop into the [ESPHome Discord](https://discord.gg/KhAMKrd) where many community members are happy to help out.
 
