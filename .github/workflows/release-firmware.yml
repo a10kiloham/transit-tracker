@@ -45,6 +45,7 @@ jobs:
 
       - name: Generate Manifest
         run: |
+          mkdir -p docs/static/firmware
           cp firmware/manifest-template.json docs/static/firmware/manifest.json
 
           sed -i "s/\$VERSION/${{ github.event.release.tag_name }}/" docs/static/firmware/manifest.json
