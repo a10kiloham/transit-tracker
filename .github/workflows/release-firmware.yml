@@ -48,12 +48,13 @@ jobs:
           mkdir -p docs/static/firmware
           cp firmware/manifest-template.json docs/static/firmware/manifest.json
 
-          sed -i "s/\$VERSION/${{ github.event.release.tag_name }}/" docs/static/firmware/manifest.json
+          tag_name="${{ github.event.release.tag_name }}"
+          sed -i "s/VERSION/${tag_name}/" docs/static/firmware/manifest.json
 
           base_download_url="${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}"
           factory_download_url="${base_download_url}/firmware.factory.bin"
 
-          sed -i "s/\$FACTORY_BIN_PATH/${factory_download_url}/" docs/static/firmware/manifest.json
+          sed -i "s/FACTORY_BIN_PATH/${factory_download_url}/" docs/static/firmware/manifest.json
 
           ota_download_url="${base_download_url}/firmware.ota.bin"
           wget -O firmware.ota.bin "${ota_download_url}"
@@ -61,9 +62,11 @@ jobs:
           ota_md5sum=$(md5sum firmware.ota.bin | cut -d ' ' -f 1)
           rm firmware.ota.bin
 
-          sed -i "s/\$OTA_BIN_PATH/${ota_download_url}/" docs/static/firmware/manifest.json
-          sed -i "s/\$OTA_BIN_MD5/${ota_md5sum}/" docs/static/firmware/manifest.json
-          sed -i "s/\$OTA_RELEASE_URL/${{ github.event.release.html_url }}" docs/static/firmware/manifest.json
+          sed -i "s/OTA_BIN_PATH/${ota_download_url}/" docs/static/firmware/manifest.json
+          sed -i "s/OTA_BIN_MD5/${ota_md5sum}/" docs/static/firmware/manifest.json
+
+          release_url="${{ github.event.release.html_url }}"
+          sed -i "s/OTA_RELEASE_URL/${release_url}" docs/static/firmware/manifest.json
 
       - name: Commit and Push Manifest
         uses: stefanzweifel/git-auto-commit-action@v5
