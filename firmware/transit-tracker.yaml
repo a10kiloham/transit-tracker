@@ -4,7 +4,7 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: "Eastside Urbanism.Transit Tracker"
-    version: "1.1.0"
+    version: "v1.2.0"
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -17,7 +17,7 @@ external_components:
     refresh: 0s
 
 logger:
-  level: INFO
+  level: DEBUG
 
 wifi:
   ap:
@@ -34,14 +34,8 @@ http_request:
   verify_ssl: false
 
 ota:
-  - platform: http_request
   - platform: esphome
     password: ""
-
-update:
-  - platform: http_request
-    name: Firmware Update
-    source: https://transit-tracker.eastsideurbanism.org/firmware/manifest.json
 
 button:
   - platform: restart
@@ -51,6 +45,11 @@ button:
     on_press:
       - lambda: |-
           id(tracker).reconnect();
+  - platform: template
+    id: write_preferences
+    on_press:
+      - lambda: |-
+          global_preferences->sync();
 
 text:
   - platform: template
@@ -98,6 +97,30 @@ text:
       then:
         lambda: |
           id(tracker).set_route_styles_from_text(id(route_styles_config)->state);
+
+select:
+  - platform: template
+    id: time_display_config
+    optimistic: true
+    restore_value: true
+    options:
+      - "departure"
+      - "arrival"
+    on_value:
+      then:
+        lambda: |-
+          id(tracker).set_display_departure_times(id(time_display_config)->state == "departure");
+  - platform: template
+    id: list_mode_config
+    optimistic: true
+    restore_value: true
+    options:
+      - "sequential"
+      - "nextPerRoute"
+    on_value:
+      then:
+        lambda: |-
+          id(tracker).set_list_mode(id(list_mode_config)->state);
 
 number:
   - platform: hub75_matrix_display

@@ -1,4 +1,9 @@
 {
   "editor.formatOnPaste": false,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.ejs": "html",
+    "*.scss": "postcss",
+    "new": "cpp"
+  }
 }
