@@ -1,4 +1,5 @@
 import { themes as prismThemes } from "prism-react-renderer"
+import type { Options as UmamiOptions } from "@dipakparmar/docusaurus-plugin-umami"
 import type { Config } from "@docusaurus/types"
 import type * as Preset from "@docusaurus/preset-classic"
 
@@ -10,8 +11,8 @@ const config: Config = {
   url: "https://transit-tracker.eastsideurbanism.org",
   baseUrl: "/",
 
-  organizationName: "EastsideUrbanism", // Usually your GitHub org/user name.
-  projectName: "transit-tracker", // Usually your repo name.
+  organizationName: "EastsideUrbanism",
+  projectName: "transit-tracker",
   trailingSlash: false,
 
   onBrokenLinks: "throw",
@@ -21,6 +22,17 @@ const config: Config = {
     defaultLocale: "en",
     locales: ["en"],
   },
+
+  plugins: [
+    [
+      "@dipakparmar/docusaurus-plugin-umami",
+      {
+        websiteID: "a0f2b1c4-3d5e-4f8b-8a7c-9d6e0f3f1a2b",
+        analyticsDomain: "umami.horner.tj",
+        dataDomains: "transit-tracker.eastsideurbanism.org",
+      } satisfies UmamiOptions,
+    ],
+  ],
 
   presets: [
     [
