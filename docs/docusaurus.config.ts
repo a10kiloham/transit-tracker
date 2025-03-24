@@ -27,7 +27,7 @@ const config: Config = {
     [
       "@dipakparmar/docusaurus-plugin-umami",
       {
-        websiteID: "a0f2b1c4-3d5e-4f8b-8a7c-9d6e0f3f1a2b",
+        websiteID: "fc090cbd-ac45-42b8-9da4-6d5a4037964f",
         analyticsDomain: "umami.horner.tj",
         scriptName: "umami.js",
         dataDomains: "transit-tracker.eastsideurbanism.org",
