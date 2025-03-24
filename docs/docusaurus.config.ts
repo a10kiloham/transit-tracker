@@ -29,6 +29,7 @@ const config: Config = {
       {
         websiteID: "a0f2b1c4-3d5e-4f8b-8a7c-9d6e0f3f1a2b",
         analyticsDomain: "umami.horner.tj",
+        scriptName: "umami.js",
         dataDomains: "transit-tracker.eastsideurbanism.org",
       } satisfies UmamiOptions,
     ],
