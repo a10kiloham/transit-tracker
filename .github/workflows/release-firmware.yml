@@ -90,5 +90,7 @@ jobs:
         with:
           commit_message: "Update firmware manifest for ${{ github.event.release.tag_name }}"
 
-      - name: Deploy Docs
-        uses: ./.github/workflows/deploy-docs.yml
+  deploy-site:
+    name: Deploy Site
+    uses: EastsideUrbanism/transit-tracker/.github/workflows/deploy-docs.yml@main
+    needs: generate-manifest
