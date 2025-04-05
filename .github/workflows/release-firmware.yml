@@ -23,7 +23,7 @@ jobs:
       - name: Compile Release Firmware
         working-directory: firmware
         run: |
-          esphome compile transit-tracker.yaml
+          esphome -s project_version ${{ github.event.release.tag_name }} compile transit-tracker.yaml
           mkdir -p bin
           cp .esphome/build/transit-tracker/.pioenvs/transit-tracker/firmware.factory.bin bin/firmware.factory.bin
           cp .esphome/build/transit-tracker/.pioenvs/transit-tracker/firmware.ota.bin bin/firmware.ota.bin
@@ -35,12 +35,12 @@ jobs:
           name: firmware-build
           path: "firmware/bin/*.bin"
 
-      # - name: Upload Release Binaries
-      #   uses: skx/github-action-publish-binaries@release-1.3
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     args: "firmware/bin/*.bin"
+      - name: Upload Release Binaries
+        uses: skx/github-action-publish-binaries@release-1.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: "firmware/bin/*.bin"
 
   generate-manifest:
     name: Generate Release Manifest
@@ -57,37 +57,38 @@ jobs:
           name: firmware-build
           path: /tmp/firmware-build
 
-      - run: ls -R /tmp/firmware-build
+      - name: Move Firmware Binaries
+        run: |
+          mv /tmp/firmware-build/firmware.bin docs/static/firmware/firmware.bin
+          mv /tmp/firmware-build/firmware.ota.bin docs/static/firmware/firmware.ota.bin
+          mv /tmp/firmware-build/firmware.factory.bin docs/static/firmware/firmware.factory.bin
 
-      # - name: Generate Manifest
-      #   run: |
-      #     mkdir -p docs/static/firmware
-      #     cp firmware/manifest-template.json docs/static/firmware/manifest.json
+      - name: Generate Manifest
+        run: |
+          mkdir -p docs/static/firmware
+          cp firmware/manifest-template.json docs/static/firmware/manifest.json
 
-      #     tag_name="${{ github.event.release.tag_name }}"
-      #     sed -i "s@VERSION@${tag_name}@" docs/static/firmware/manifest.json
+          tag_name="${{ github.event.release.tag_name }}"
+          sed -i "s@VERSION@${tag_name}@" docs/static/firmware/manifest.json
 
-      #     base_download_url="${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}"
-      #     factory_download_url="${base_download_url}/firmware.factory.bin"
+          base_download_url="https://transit-tracker.eastsideurbanism.org/firmware"
+          factory_download_url="${base_download_url}/firmware.factory.bin"
 
-      #     sed -i "s@FACTORY_BIN_PATH@${factory_download_url}@" docs/static/firmware/manifest.json
+          sed -i "s@FACTORY_BIN_PATH@${factory_download_url}@" docs/static/firmware/manifest.json
 
-      #     ota_download_url="${base_download_url}/firmware.ota.bin"
-      #     wget -O firmware.ota.bin "${ota_download_url}"
+          ota_download_url="${base_download_url}/firmware.ota.bin"
+          ota_md5sum=$(md5sum /tmp/firmware-build/firmware.ota.bin | cut -d ' ' -f 1)
 
-      #     ota_md5sum=$(md5sum firmware.ota.bin | cut -d ' ' -f 1)
-      #     rm firmware.ota.bin
+          sed -i "s@OTA_BIN_PATH@${ota_download_url}@" docs/static/firmware/manifest.json
+          sed -i "s@OTA_BIN_MD5@${ota_md5sum}@" docs/static/firmware/manifest.json
 
-      #     sed -i "s@OTA_BIN_PATH@${ota_download_url}@" docs/static/firmware/manifest.json
-      #     sed -i "s@OTA_BIN_MD5@${ota_md5sum}@" docs/static/firmware/manifest.json
+          release_url="${{ github.event.release.html_url }}"
+          sed -i "s@OTA_RELEASE_URL@${release_url}@" docs/static/firmware/manifest.json
 
-      #     release_url="${{ github.event.release.html_url }}"
-      #     sed -i "s@OTA_RELEASE_URL@${release_url}@" docs/static/firmware/manifest.json
+      - name: Commit and Push Manifest
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update firmware manifest for ${{ github.event.release.tag_name }}"
 
-      # - name: Commit and Push Manifest
-      #   uses: stefanzweifel/git-auto-commit-action@v5
-      #   with:
-      #     commit_message: "Update firmware manifest for ${{ github.event.release.tag_name }}"
-
-      # - name: Deploy Docs
-      #   uses: ./.github/workflows/deploy-docs.yml
+      - name: Deploy Docs
+        uses: ./.github/workflows/deploy-docs.yml

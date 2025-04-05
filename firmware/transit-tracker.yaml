@@ -1,10 +1,13 @@
+substitutions:
+  project_version: "dev"
+
 esphome:
   name: transit-tracker
   friendly_name: Transit Tracker
   name_add_mac_suffix: true
   project:
     name: "Eastside Urbanism.Transit Tracker"
-    version: "v1.2.0"
+    version: ${project_version}
 
 esp32:
   board: esp32-s3-devkitc-1
