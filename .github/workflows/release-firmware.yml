@@ -79,7 +79,7 @@ jobs:
           sed -i "s@FACTORY_BIN_PATH@${factory_download_url}@" docs/static/firmware/manifest.json
 
           ota_download_url="${base_download_url}/firmware.ota.bin"
-          ota_md5sum=$(md5sum /tmp/firmware-build/firmware.ota.bin | cut -d ' ' -f 1)
+          ota_md5sum=$(md5sum docs/static/firmware/firmware.ota.bin | cut -d ' ' -f 1)
 
           sed -i "s@OTA_BIN_PATH@${ota_download_url}@" docs/static/firmware/manifest.json
           sed -i "s@OTA_BIN_MD5@${ota_md5sum}@" docs/static/firmware/manifest.json
