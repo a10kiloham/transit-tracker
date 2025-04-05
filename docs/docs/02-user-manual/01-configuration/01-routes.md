@@ -1,13 +1,5 @@
 # Routes
 
-In this section, you can configure where your Transit Tracker pulls data from, which routes you want to display, and some various options for how to display that data.
-
-## Data Source
-
-This option controls where schedule data is fetched from. Typically, each data source covers a specific transit agency or region. Set this to the data source that contains the routes you want to track. The available data sources depend on the [API server](../../03-advanced/api-server.md) you are using.
-
-Currently only one data source can be used at a time (i.e., you can't show routes from two or more), but this may change in the future.
-
 ## Selected Routes
 
 This will show how many routes and stops have been selected.
@@ -29,6 +21,16 @@ This is useful because now only trips that you can feasibly make will be shown.
 ## Time Display
 
 This option controls whether the displayed times count down to the next arrival or the next departure. It may be useful to choose departure if, for instance, your train or bus typically lingers at a station for a while before leaving.
+
+## Time Units
+
+You can change how the time units are displayed depending on how compact you want it to be.
+
+| Option | Minutes Example | Hours and Minutes Example |
+| :----- | :-------------- | :------------------------ |
+| Long   | 15min           | 1h15m                     |
+| Short  | 15m             | 1h15m                     |
+| None   | 15              | 1:15                      |
 
 ## Schedule Mode
 

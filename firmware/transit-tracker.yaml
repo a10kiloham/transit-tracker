@@ -111,6 +111,27 @@ select:
         lambda: |-
           id(tracker).set_display_departure_times(id(time_display_config)->state == "departure");
   - platform: template
+    id: time_units_config
+    optimistic: true
+    restore_value: true
+    options:
+      - "long"
+      - "short"
+      - "none"
+    on_value:
+      then:
+        lambda: |-
+          transit_tracker::UnitDisplay unit_display;
+          if (id(time_units_config)->state == "long") {
+            unit_display = transit_tracker::UnitDisplay::UNIT_DISPLAY_LONG;
+          } else if (id(time_units_config)->state == "short") {
+            unit_display = transit_tracker::UnitDisplay::UNIT_DISPLAY_SHORT;
+          } else {
+            unit_display = transit_tracker::UnitDisplay::UNIT_DISPLAY_NONE;
+          }
+
+          id(tracker).set_unit_display(unit_display);
+  - platform: template
     id: list_mode_config
     optimistic: true
     restore_value: true
