@@ -37,8 +37,14 @@ http_request:
   verify_ssl: false
 
 ota:
+  - platform: http_request
   - platform: esphome
     password: ""
+
+update:
+  - platform: http_request
+    name: Firmware Update
+    source: https://transit-tracker.eastsideurbanism.org/firmware/manifest.json
 
 button:
   - platform: restart
