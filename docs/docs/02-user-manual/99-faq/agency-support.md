@@ -4,6 +4,10 @@ Eastside Urbanism's Transit Tracker API server currently supports these transit 
 
 ## Supported Agencies
 
+### USA
+
+- Amtrak
+
 ### Washington State
 
 - King County Metro (buses and Seattle Streetcar)
@@ -12,7 +16,6 @@ Eastside Urbanism's Transit Tracker API server currently supports these transit 
 - Community Transit
 - Intercity Transit
 - Washington State Ferries
-- Amtrak (Cascades only)
 - Seattle Center Monorail
 - Everett Transit
 - Kitsap Transit
