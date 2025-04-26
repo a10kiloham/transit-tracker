@@ -46,6 +46,19 @@ update:
     name: Firmware Update
     source: https://transit-tracker.eastsideurbanism.org/firmware/manifest.json
 
+switch:
+  - platform: template
+    id: flip_display_config
+    name: "Flip Display"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - lambda: |-
+          id(matrix).set_rotation(esphome::display::DisplayRotation::DISPLAY_ROTATION_180_DEGREES);
+    turn_off_action:
+      - lambda: |-
+          id(matrix).set_rotation(esphome::display::DisplayRotation::DISPLAY_ROTATION_0_DEGREES);
+
 button:
   - platform: restart
     name: "Restart"
