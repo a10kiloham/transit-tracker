@@ -221,7 +221,7 @@ binary_sensor:
       then:
         - script.execute:
             id: dim_display
-            up: true
+            up: !lambda "return !id(flip_display_config).state;"
   - platform: gpio
     id: down_button
     pin:
@@ -232,7 +232,7 @@ binary_sensor:
       then:
         - script.execute:
             id: dim_display
-            up: false
+            up: !lambda "return id(flip_display_config).state;"
 
 display:
   - platform: hub75_matrix_display
