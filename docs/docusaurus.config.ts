@@ -121,6 +121,11 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
+    algolia: {
+      appId: "8OZCDSZZBS",
+      apiKey: "50910132f5b276791d199f3f10632ebf",
+      indexName: "transit-tracker-eastsideurbanism",
+    },
   } satisfies Preset.ThemeConfig,
 }
 
