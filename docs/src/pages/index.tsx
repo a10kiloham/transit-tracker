@@ -31,6 +31,12 @@ function HomepageHeader() {
               >
                 Build Your Own
               </Link>
+              <Link
+                className="button button--secondary button--lg"
+                to="/docs/build-parties"
+              >
+                Join a Build Party
+              </Link>
             </div>
           </div>
         </div>
