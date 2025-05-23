@@ -8,7 +8,15 @@ Eastside Urbanism's Transit Tracker API server currently supports these transit 
 
 - Amtrak
 
-### Washington State
+#### California
+
+- North County Transit District
+
+#### Washington, D.C.
+
+- Washington Metropolitan Area Transit Authority (WMATA)
+
+#### Washington State
 
 - King County Metro (buses and Seattle Streetcar)
 - Sound Transit (Link light rail, ST Express buses, and Sounder)
@@ -20,10 +28,6 @@ Eastside Urbanism's Transit Tracker API server currently supports these transit 
 - Everett Transit
 - Kitsap Transit
 - Whatcom Transportation Authority
-
-### California
-
-- North County Transit District
 
 ## Agency not listed?
 
