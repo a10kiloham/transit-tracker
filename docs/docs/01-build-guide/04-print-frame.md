@@ -5,8 +5,8 @@ The frame for the display is designed to be 3D printed in **two halves** to acco
 - [Download `frame.stl`](/frame/frame.stl)
 - [Download `frame.step`](/frame/frame.step)
 
-:::note
-Your slicer may complain about the model not being water-tight or similar. This is normal due to how it was exported. You can manually inspect the generated G-code to ensure there are no issues.
+:::tip
+If you're a fan of OpenSCAD and want to make modifications (e.g., for differently sized panels), you can try out [this version](https://github.com/BillKing94/transit-tracker-frame/blob/main/frame.scad) of the frame.
 :::
 
 ## Recommendations
@@ -26,6 +26,10 @@ If your printer is a "bed slinger" design, the long side should be parallel to t
 ![](_img/3-bedslinger.png)
 
 ### Slicer settings
+
+:::note
+Your slicer may complain about the model not being water-tight or similar. This is normal due to how it was exported. You can manually inspect the generated G-code to ensure there are no issues.
+:::
 
 Since this is a larger print with few fine details, I recommend using a 0.6mm nozzle with your slicer's adaptive/variable layer height feature enabled. This will give you a reasonably short print time while still allowing finer details where needed, such as around the mounting holes.
 
