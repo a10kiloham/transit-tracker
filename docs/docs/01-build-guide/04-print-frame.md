@@ -2,8 +2,8 @@
 
 The frame for the display is designed to be 3D printed in **two halves** to accommodate the small build volume of most printers. Each half will fit one display and will be screwed together once assembled. The halves are identical, so you only need to print the same file twice.
 
-- [Download `frame.stl`](/frame/frame.stl)
-- [Download `frame.step`](/frame/frame.step)
+- [Download `transit-tracker-frame.stl`](pathname:///frame/transit-tracker-frame.stl) for printing
+- [Download `transit-tracker-frame.step`](pathname:///frame/transit-tracker-frame.step) for modifying with CAD software
 
 :::tip
 If you're a fan of OpenSCAD and want to make modifications (e.g., for differently sized panels), you can try out [this version](https://github.com/BillKing94/transit-tracker-frame/blob/main/frame.scad) of the frame.
