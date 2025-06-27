@@ -40,7 +40,7 @@ If you see a status message on your Transit Tracker instead of the schedule, tha
 3. Restart your Transit Tracker.
 4. Re-save your configuration from the [configurator](/configurator).
 
-If it's still not working, then it's very likely that the server which hosts the schedule data is down, in which case all you can really do 
+If it's still not working, then it's very likely that the server which hosts the schedule data is down, in which case all you can really do is wait for it to come back up.
 
 ### "Loading..."
 
