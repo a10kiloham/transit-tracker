@@ -65,6 +65,7 @@ jobs:
       - name: Algolia Crawler
         uses: algolia/algoliasearch-crawler-github-actions@v1.1.13
         with:
+          crawler-name: "transit-tracker-eastsideurbanism"
           crawler-user-id: ${{ secrets.CRAWLER_USER_ID }}
           crawler-api-key: ${{ secrets.CRAWLER_API_KEY }}
           algolia-app-id: ${{ secrets.ALGOLIA_APP_ID }}
