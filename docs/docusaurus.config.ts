@@ -40,6 +40,7 @@ const config: Config = {
       "classic",
       {
         docs: {
+          showLastUpdateTime: true,
           sidebarPath: "./sidebars.ts",
           editUrl:
             "https://github.com/EastsideUrbanism/transit-tracker/tree/main/docs/",
