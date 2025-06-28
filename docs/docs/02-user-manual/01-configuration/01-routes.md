@@ -14,9 +14,9 @@ Find the a stop with departures or arrivals you want to track, click it, then se
 
 #### Travel Time
 
-Under each selected stop is a "Set travel time" button. If you set one, it will be taken into account when displaying the countdown. For example, if you set a travel time of 5 minutes and a bus arrives in 15 minutes, the arrival time will be shown as 10 minutes.
+You can adjust the arrival/departure times shown on your Transit Tracker by pressing the "Set travel time" button under the stop name. Set the travel time to how long it takes for you to walk/bike/roll to the stop, and the times on your Transit Tracker will be adjusted accordingly.
 
-This is useful because now only trips that you can feasibly make will be shown.
+For example, if you set a travel time of 5 minutes, and the next bus is scheduled to arrive at the stop in 15 minutes, your Transit Tracker will display 10 minutes. This effectively gives you a "leave by" time and hides any trips that you would not be able to catch in time.
 
 ## Time Display
 
