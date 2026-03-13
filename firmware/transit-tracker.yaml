@@ -11,7 +11,7 @@ esphome:
     version: ${project_version}
 
 dashboard_import:
-  package_import_url: github://EastsideUrbanism/transit-tracker/firmware/transit-tracker.yaml@${project_version}
+  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@${project_version}
 
 esp32:
   variant: esp32s3
