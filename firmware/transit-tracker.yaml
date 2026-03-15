@@ -26,9 +26,7 @@ psram:
 
 external_components:
   - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@main
-    components: [ hub75 ]
   - source: github://a10kiloham/esphome-transit-tracker@main
-      refresh: 0s
   - source: github://tjhorner/esphome-custom-components@main
     components: [ lis3dh, project_version ]
 
