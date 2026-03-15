@@ -390,6 +390,7 @@ color:
     hex: "FF0037"
 
 transit_tracker:
+  id: tracker
   base_url: "wss://tfl.xdca.com/"
   time_display: "arrival"
   show_units: "long"
