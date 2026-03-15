@@ -390,6 +390,7 @@ color:
     hex: "FF0037"
 
 transit_tracker:
+  id: tracker
   base_url: "wss://redacted.invalid/"
   time_display: "arrival"
   show_units: "long"
