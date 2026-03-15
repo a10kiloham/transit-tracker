@@ -3,15 +3,15 @@ substitutions:
 
 esphome:
   name: transit-tracker
-  friendly_name: Transit Tracker
+  friendly_name: TfL Transit Tracker
   name_add_mac_suffix: true
   min_version: 2026.2.1
   project:
-    name: "Eastside Urbanism.Transit Tracker"
-    version: ${project_version}
+    name: "Transit Tracker"
+    version: master
 
 dashboard_import:
-  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@${project_version}
+  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@master
 
 esp32:
   variant: esp32s3
@@ -25,13 +25,12 @@ psram:
   speed: 80MHz
 
 external_components:
-  - source: github://pr#13921
+  - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@main
     components: [ hub75 ]
-    refresh: 1h
-  - source: github://tjhorner/esphome-custom-components@c57ffd46fcf30badb2838421e8ff6cbeb9c1dd06
-    components: [ serial_rpc, lis3dh, project_version ]
-  - source: github://tjhorner/esphome-transit-tracker@main
-    refresh: 0s
+  - source: github://a10kiloham/esphome-transit-tracker@main
+      refresh: 0s
+  - source: github://tjhorner/esphome-custom-components@main
+    components: [ lis3dh, project_version ]
 
 logger:
   level: DEBUG
@@ -39,7 +38,7 @@ logger:
 wifi:
   power_save_mode: none
   ap:
-    password: "hunter2hunter2"
+    password: "transittracker"
 
 captive_portal:
 
@@ -54,14 +53,10 @@ ota:
   - platform: esphome
     password: ""
 
-update:
-  - platform: http_request
-    name: Firmware Update
-    source: https://transit-tracker.eastsideurbanism.org/firmware/manifest.json
-
 switch:
   - platform: template
     id: flip_display_config
+    name: "Flip Display"
     optimistic: true
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
@@ -79,12 +74,22 @@ switch:
       - lambda: id(tracker).set_scroll_headsigns(true);
     turn_off_action:
       - lambda: id(tracker).set_scroll_headsigns(false);
+  - platform: template
+    id: show_line_icons_config
+    name: "Show Line Icons"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: id(tracker).set_show_line_icons(true);
+    turn_off_action:
+      - lambda: id(tracker).set_show_line_icons(false);
 
 button:
   - platform: restart
     name: "Restart"
   - platform: template
     id: reload_tracker
+    name: "Reload Tracker"
     on_press:
       - lambda: |-
           id(tracker).reconnect();
@@ -129,6 +134,12 @@ text:
       then:
         lambda: |
           id(tracker).set_route_styles_from_text(id(route_styles_config)->state);
+  - <<: *config_text_common
+    id: sort_order_config
+    on_value:
+      then:
+        lambda: |
+          id(tracker).set_sort_order_from_text(id(sort_order_config)->state);  
   - <<: *config_text_common
     id: now_str_config
     initial_value: "min"
@@ -220,6 +231,9 @@ light:
     id: display_brightness
     output: display_brightness_output
     restore_mode: RESTORE_DEFAULT_ON
+
+web_server:
+  js_include: "./transit_config_ui.js"
 
 status_led:
   pin:
@@ -366,11 +380,7 @@ font:
 time:
   - platform: sntp
     id: sntp_time
-    timezone: America/Los_Angeles
-
-web_server:
+    timezone: Europe/London
 
 transit_tracker:
   id: tracker
-
-serial_rpc:
