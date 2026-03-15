@@ -7,8 +7,8 @@ esphome:
   name_add_mac_suffix: true
   min_version: 2026.2.1
   project:
-    name: "Transit Tracker"
-    version: master
+    name: "a10kiloham.Transit Tracker"
+    version: ${project_version}
 
 dashboard_import:
   package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@master
@@ -26,19 +26,22 @@ psram:
 
 external_components:
   - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@main
+    refresh: 0s
   - source: github://a10kiloham/esphome-transit-tracker@main
+    refresh: 0s
   - source: github://tjhorner/esphome-custom-components@main
     components: [ lis3dh, project_version ]
+    refresh: 0s
 
 logger:
   level: DEBUG
 
 wifi:
-  power_save_mode: none
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  power_save_mode: "NONE"
   ap:
     password: "transittracker"
-
-captive_portal:
 
 api:
   reboot_timeout: 0s
@@ -380,5 +383,36 @@ time:
     id: sntp_time
     timezone: Europe/London
 
+color:
+  - id: "c_001AFF"
+    hex: "001AFF"
+  - id: "c_FF0037"
+    hex: "FF0037"
+
 transit_tracker:
-  id: tracker
+  base_url: "wss://tfl.xdca.com/"
+  time_display: "arrival"
+  show_units: "long"
+  list_mode: "sequential"
+  scroll_headsigns: true
+  stops:
+    - stop_id: "tfl:940GZZLUHTD"
+      routes:
+        - "tfl:northern-outbound"
+        - "tfl:northern-inbound"
+  styles:
+    - route_id: "tfl:northern-outbound"
+      name: ""
+      color: "c_001AFF"
+    - route_id: "tfl:northern-inbound"
+      name: ""
+      color: "c_FF0037"
+  abbreviations:
+    - from: "Edgware via Bank"
+      to: "Edgware"
+    - from: "Edgware via CX"
+      to: "Edgware"
+    - from: "Morden via CX"
+      to: "Morden via Charing Cross"
+    - from: "Kennington via CX"
+      to: "Kennington via Charing Cross"
