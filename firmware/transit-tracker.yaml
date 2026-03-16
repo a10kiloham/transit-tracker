@@ -2,16 +2,29 @@ substitutions:
   project_version: "dev"
 
 esphome:
-  name: transit-tracker
-  friendly_name: TfL Transit Tracker
+  name: ${name}
+  friendly_name: ${friendly_name}
   name_add_mac_suffix: true
   min_version: 2026.2.1
   project:
     name: "a10kiloham.Transit Tracker"
     version: ${project_version}
 
+ota:
+  - platform: http_request
+  - platform: esphome
+
+external_components:
+  - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@main
+    refresh: 0s
+  - source: github://a10kiloham/esphome-transit-tracker@main
+    refresh: 0s
+  - source: github://tjhorner/esphome-custom-components@main
+    components: [ lis3dh, project_version ]
+    refresh: 0s
+
 dashboard_import:
-  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@master
+  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@main
 
 esp32:
   variant: esp32s3
@@ -23,15 +36,6 @@ esp32:
 psram:
   mode: quad
   speed: 80MHz
-
-external_components:
-  - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@main
-    refresh: 0s
-  - source: github://a10kiloham/esphome-transit-tracker@main
-    refresh: 0s
-  - source: github://tjhorner/esphome-custom-components@main
-    components: [ lis3dh, project_version ]
-    refresh: 0s
 
 logger:
   level: DEBUG
@@ -48,11 +52,6 @@ api:
 
 http_request:
   verify_ssl: false
-
-ota:
-  - platform: http_request
-  - platform: esphome
-    password: ""
 
 switch:
   - platform: template
@@ -391,7 +390,7 @@ color:
 
 transit_tracker:
   id: tracker
-  base_url: "wss://tfl.xdca.com/"
+  #base_url: "wss://tfl.xdca.com/"
   time_display: "arrival"
   show_units: "long"
   list_mode: "sequential"
