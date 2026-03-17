@@ -375,20 +375,6 @@ time:
     id: sntp_time
     timezone: Europe/London
 
-color:
-  - id: tt_red
-    hex: "F50046"
-  - id: tt_green
-    hex: "20FF00"
-  - id: tt_orange
-    hex: "ff5900"
-  - id: tt_yellow
-    hex: "FFD700"
-  - id: tt_white
-    hex: "E0E0E0"
-  - id: tt_grey
-    hex: "B0B0B0"
-
 transit_tracker:
   id: tracker
 
