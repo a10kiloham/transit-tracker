@@ -355,19 +355,12 @@ display:
       - id: transit_schedule
         lambda: |-
           id(tracker).draw_schedule();
-      - id: ip_address_page
+      - id: clock_page
         lambda: |-
           int x = it.get_width() / 2;
           int y = it.get_height() / 2;
-
-          auto ip_addresses = ::esphome::network::get_ip_addresses();
-          if (ip_addresses.empty()) {
-            it.printf(x, y, id(pixolletta), COLOR_ON, TextAlign::CENTER, "No IP Address");
-            return;
-          }
-
-          it.printf(x, y, id(pixolletta), COLOR_ON, TextAlign::CENTER, "%s", ip_addresses[0].str().c_str());
-
+          it.strftime(x, y / 2, id(pixolletta), COLOR_ON, TextAlign::CENTER, "%r", id(sntp_time).now());
+          it.strftime(x, y + (y / 2), id(pixolletta), COLOR_ON, TextAlign::CENTER, "%B %d, %Y", id(sntp_time).now());
 font:
   - file: "fonts/Pixolletta8px.ttf"
     id: pixolletta
@@ -387,32 +380,45 @@ color:
     hex: "001AFF"
   - id: "c_FF0037"
     hex: "FF0037"
+  - id: my_red
+    hex: "F50046"
+  - id: my_green
+    hex: "20FF00"
+  - id: my_orange
+    hex: "ff5900"
+  - id: numbered_yellow
+    hex: "FFD700"
+  - id: headsign_white
+    hex: "E0E0E0"
+  - id: time_grey
+    hex: "B0B0B0"
+  - id: realtime_green
+    hex: "20FF00"
 
 transit_tracker:
   id: tracker
-  #base_url: "wss://tfl.xdca.com/"
-  time_display: "arrival"
-  show_units: "long"
-  list_mode: "sequential"
-  scroll_headsigns: true
-  stops:
-    - stop_id: "tfl:940GZZLUHTD"
-      routes:
-        - "tfl:northern-outbound"
-        - "tfl:northern-inbound"
-  styles:
-    - route_id: "tfl:northern-outbound"
-      name: ""
-      color: "c_001AFF"
-    - route_id: "tfl:northern-inbound"
-      name: ""
-      color: "c_FF0037"
-  abbreviations:
-    - from: "Edgware via Bank"
-      to: "Edgware"
-    - from: "Edgware via CX"
-      to: "Edgware"
-    - from: "Morden via CX"
-      to: "Morden via Charing Cross"
-    - from: "Kennington via CX"
-      to: "Kennington via Charing Cross"
+
+  # #base_url: "wss://tfl.xdca.com/"
+  # time_display: "arrival"
+  # show_units: "long"
+  # list_mode: "sequential"
+  # scroll_headsigns: true
+  # stops:
+  #   - stop_id: "tfl:940GZZLUHTD"
+  #     routes:
+  #       - "tfl:northern-outbound"
+  #       - "tfl:northern-inbound"
+  # styles:
+  #   - route_id: "tfl:northern-outbound"
+  #     name: ""
+  #     #color: "c_001AFF"
+  #   - route_id: "tfl:northern-inbound"
+  #     name: ""
+  #     #color: "c_FF0037"
+  # abbreviations:
+  #   - from: "Edgware via Bank"
+  #     to: "Edgware"
+  #   - from: "Edgware via CX"
+  #     to: "Edgware"
+  #   - from: "via CX"
+  #     to: "via Charing Cross"
