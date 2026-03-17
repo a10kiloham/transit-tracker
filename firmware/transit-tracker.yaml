@@ -383,7 +383,7 @@ color:
   - id: my_red
     hex: "F50046"
   - id: my_green
-    hex: "20FF00"
+    hex: "20FF01"
   - id: my_orange
     hex: "ff5900"
   - id: numbered_yellow
