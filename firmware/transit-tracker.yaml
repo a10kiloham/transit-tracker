@@ -376,24 +376,18 @@ time:
     timezone: Europe/London
 
 color:
-  - id: "c_001AFF"
-    hex: "001AFF"
-  - id: "c_FF0037"
-    hex: "FF0037"
-  - id: my_red
+  - id: tt_red
     hex: "F50046"
-  - id: my_green
-    hex: "20FF01"
-  - id: my_orange
-    hex: "ff5900"
-  - id: numbered_yellow
-    hex: "FFD700"
-  - id: headsign_white
-    hex: "E0E0E0"
-  - id: time_grey
-    hex: "B0B0B0"
-  - id: realtime_green
+  - id: tt_green
     hex: "20FF00"
+  - id: tt_orange
+    hex: "ff5900"
+  - id: tt_yellow
+    hex: "FFD700"
+  - id: tt_white
+    hex: "E0E0E0"
+  - id: tt_grey
+    hex: "B0B0B0"
 
 transit_tracker:
   id: tracker
