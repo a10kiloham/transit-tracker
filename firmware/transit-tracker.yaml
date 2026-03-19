@@ -345,11 +345,11 @@ display:
     panel_height: 32
     layout_cols: 2
     # We swap the G and B channels in firmware because the 64x32 panel hardware has them reversed
-    g1_pin: 37
-    b1_pin: 39
-    g2_pin: 40
-    b2_pin: 41
-    e_pin: 21
+    # g1_pin: 37
+    # b1_pin: 39
+    # g2_pin: 40
+    # b2_pin: 41
+    # e_pin: 21
     brightness: 255
     pages:
       - id: transit_schedule
