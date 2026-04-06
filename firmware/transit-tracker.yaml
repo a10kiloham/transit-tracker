@@ -142,7 +142,7 @@ text:
           id(tracker).set_sort_order_from_text(id(sort_order_config)->state);  
   - <<: *config_text_common
     id: now_str_config
-    initial_value: "min"
+    initial_value: "due"
     on_value:
       then:
         lambda: |-
