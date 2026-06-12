@@ -379,8 +379,8 @@ time:
     id: sntp_time
     timezone: Europe/London
 
-transit_tracker:
-  id: tracker
+#transit_tracker:
+#  id: tracker
 
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
   # #base_url: "wss://tfl.xdca.com/"
