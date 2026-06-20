@@ -23,8 +23,8 @@ external_components:
     components: [ lis3dh, project_version ]
     refresh: 0s
 
-dashboard_import:
-  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@main
+#dashboard_import:
+#  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@main
 
 esp32:
   variant: esp32s3
@@ -48,7 +48,7 @@ wifi:
     password: "transittracker"
 
 api:
-  reboot_timeout: 0s
+  reboot_timeout: 10s
 
 http_request:
   verify_ssl: false
@@ -342,8 +342,8 @@ display:
     double_buffer: true
     update_interval: 32ms
     panel_width: 64
-    panel_height: 32
-    layout_cols: 2
+    panel_height: 64
+    layout_cols: 4
     # We swap the G and B channels in firmware because the 64x32 panel hardware has them reversed
     # g1_pin: 37
     # b1_pin: 39
@@ -359,8 +359,8 @@ display:
         lambda: |-
           int x = it.get_width() / 2;
           int y = it.get_height() / 2;
-          it.strftime(x, y / 2, id(lul16), COLOR_ON, TextAlign::CENTER, "%r", id(sntp_time).now());
-          it.strftime(x, y + (y / 2), id(lul16), COLOR_ON, TextAlign::CENTER, "%B %d, %Y", id(sntp_time).now());
+          it.strftime(x, y / 2, id(pixolletta), COLOR_ON, TextAlign::CENTER, "%r", id(sntp_time).now());
+          it.strftime(x, y + (y / 2), id(pixolletta), COLOR_ON, TextAlign::CENTER, "%B %d, %Y", id(sntp_time).now());
 font:
   - file: "fonts/Pixolletta8px.ttf"
     id: pixolletta
