@@ -403,6 +403,15 @@ display:
       # auto-advancing one-route-per-page rotation.
       - id: transit_schedule
         lambda: |-
+          // TEMP diagnostic: is this page actually being redrawn every frame?
+          // ~30 draws/sec => redraw is fine, scrolling issue is scroll-specific.
+          // ~0 after the first => redraw is dead (suspect the HUB75 wrapper /
+          // double_buffer), which is what would freeze scrolling. Remove once
+          // the scroll cause is confirmed.
+          static uint32_t last = 0, n = 0;
+          n++;
+          uint32_t now = millis();
+          if (now - last > 1000) { ESP_LOGD("split", "%u draws/sec", n); n = 0; last = now; }
           id(tracker).draw_split_schedule();
       - id: clock_page
         lambda: |-
@@ -412,7 +421,7 @@ display:
           it.strftime(x, y + (y / 2), id(lul16), COLOR_ON, TextAlign::CENTER, "%B %d, %Y", id(sntp_time).now());
 font:
   - file: "fonts/Pixolletta8px.ttf"
-    size: 10
+    size: 11
     id: lul16
     glyphs:
       - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:*' &
@@ -444,7 +453,7 @@ transit_tracker:
   default_route_color: my_orange
   route_display: numbered
   realtime_color: my_red
-  show_realtime_icon: true
+  show_realtime_icon: false
   # Rows per pane. Each pane is 64px tall, so larger fonts need a smaller
   # limit (rows * ~font line-height must fit in 64px). At size 14, 4 rows
   # (~56px) fit comfortably; bump the font down / limit up for more arrivals.

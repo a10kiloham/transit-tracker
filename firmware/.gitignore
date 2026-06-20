@@ -1,3 +1,3 @@
-.esphome/
+.esphome
 secrets.yaml
 *-dev.yaml
