@@ -19,22 +19,6 @@ ota:
   - platform: http_request
   - platform: esphome
 
-# If the app crashes repeatedly on boot, fall back to a minimal WiFi+OTA-only
-# mode so the device stays re-flashable over the network instead of needing a
-# USB serial flash. (This is what was missing when the 256x64 build hard-faulted.)
-
-safe_mode:
-  num_attempts: 5
-
-external_components:
-  - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@4fc1f26500b97a39693cd8af4ba2abb75f83ce0b
-    refresh: 0s
-  - source: github://a10kiloham/esphome-transit-tracker@main
-    refresh: 0s
-  - source: github://tjhorner/esphome-custom-components@c57ffd46fcf30badb2838421e8ff6cbeb9c1dd06
-    components: [ lis3dh, project_version ]
-    refresh: 0s
-
 color:
   - id: my_red
     hex: "F50046"
@@ -52,7 +36,19 @@ color:
     hex: "ffbf00"
   - id: my_yellow
     hex: "ffff00"
-    
+
+external_components:
+  - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@4fc1f26500b97a39693cd8af4ba2abb75f83ce0b
+    refresh: 0s
+  - source: github://a10kiloham/esphome-transit-tracker@main
+    refresh: 0s
+  - source: github://tjhorner/esphome-custom-components@c57ffd46fcf30badb2838421e8ff6cbeb9c1dd06
+    components: [ lis3dh, project_version ]
+    refresh: 0s
+
+#dashboard_import:
+#  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@main
+
 esp32:
   variant: esp32s3
   flash_size: 8MB
@@ -75,9 +71,6 @@ wifi:
     password: "transittracker"
 
 api:
-  # 0s = never self-reboot when no API client is connected. With a non-zero
-  # timeout an unattended device (no Home Assistant) reboots every Ns, which
-  # destabilizes OTA and resets the display mid-render.
   reboot_timeout: 0s
 
 http_request:
@@ -99,11 +92,7 @@ switch:
     id: scroll_headsigns_config
     name: "Scroll Headsigns"
     optimistic: true
-    # ALWAYS_ON (not RESTORE_DEFAULT_ON): force scrolling on every boot. With
-    # RESTORE_DEFAULT_ON a stale OFF value in NVS restores after setup and calls
-    # set_scroll_headsigns(false), silently overriding `scroll_headsigns: true`
-    # in the transit_tracker config — which is what stopped headsigns scrolling.
-    restore_mode: ALWAYS_ON
+    restore_mode: RESTORE_DEFAULT_ON
     turn_on_action:
       - lambda: id(tracker).set_scroll_headsigns(true);
     turn_off_action:
@@ -173,7 +162,7 @@ text:
     on_value:
       then:
         lambda: |
-          id(tracker).set_sort_order_from_text(id(sort_order_config)->state);
+          id(tracker).set_sort_order_from_text(id(sort_order_config)->state);  
   - <<: *config_text_common
     id: now_str_config
     initial_value: "due"
@@ -373,13 +362,19 @@ display:
   - platform: hub75
     id: matrix
     board: adafruit-matrix-portal-s3
-    # 256x64 is 4x the pixels of the 128x32 build. The HUB75 DMA framebuffer
-    # must live in internal SRAM (not the quad PSRAM), so shrink it to fit:
-    # double_buffer off + lower bit_depth. If it still won't boot/flickers,
-    # drop bit_depth to 4 and/or add `clock_speed: 10MHZ`.
+    # 256x64 is a long 4-panel chain: each row is clocked out 4x longer than the
+    # old 128x32 build, so the panel's refresh rate drops ~4x and it flickers.
+    # bit_depth is the strongest refresh lever -- full-colour refresh scales as
+    # clock / (width * rows * (2^bit_depth - 1)), so 5 -> 4 roughly DOUBLES the
+    # refresh (~130Hz here, flicker-free) at full 4-bit colour and uses LESS
+    # internal SRAM. 4 bits/channel is plenty for solid colours + text.
+    # double_buffer:true also kills scroll *tearing*. If any flicker remains,
+    # next step is `clock_speed: 20MHZ` -- but watch for ghosting/smearing on
+    # this long chain; back off to 16MHz if the image smears.
     double_buffer: true
     bit_depth: 4
     update_interval: 32ms
+    clock_speed: 16MHz
     # Declare the REAL single panel size and count panels with layout_cols.
     # Do not fold two 64-wide panels into one 128-wide "panel" or the image
     # repeats sideways across the chain.
@@ -399,21 +394,9 @@ display:
     # e_pin: 21
     brightness: 255
     pages:
-      # Single split page on the 256x64 panel: left half = first configured
-      # route (e.g. NB), right half = second route (e.g. SB). Replaces the old
-      # auto-advancing one-route-per-page rotation.
       - id: transit_schedule
         lambda: |-
-          // TEMP diagnostic: is this page actually being redrawn every frame?
-          // ~30 draws/sec => redraw is fine, scrolling issue is scroll-specific.
-          // ~0 after the first => redraw is dead (suspect the HUB75 wrapper /
-          // double_buffer), which is what would freeze scrolling. Remove once
-          // the scroll cause is confirmed.
-          static uint32_t last = 0, n = 0;
-          n++;
-          uint32_t now = millis();
-          if (now - last > 1000) { ESP_LOGD("split", "%u draws/sec", n); n = 0; last = now; }
-          id(tracker).draw_split_schedule();
+          id(tracker).draw_schedule();
       - id: clock_page
         lambda: |-
           int x = it.get_width() / 2;
@@ -421,23 +404,24 @@ display:
           it.strftime(x, y / 2, id(lul16), COLOR_ON, TextAlign::CENTER, "%r", id(sntp_time).now());
           it.strftime(x, y + (y / 2), id(lul16), COLOR_ON, TextAlign::CENTER, "%B %d, %Y", id(sntp_time).now());
 font:
+  # 2x size for the 64px-tall jumbo display. The transit_tracker layout derives
+  # all row heights/spacing from this font's ascender+descender, so bumping the
+  # size scales the whole schedule. With limit:3 this is ~56px tall in 64px; if
+  # the bottom row clips, drop to 18. (The realtime "live" icon is a fixed 6x6
+  # bitmap in the component and does NOT scale -- it'll look small next to 2x text.)
   - file: "fonts/Pixolletta8px.ttf"
-    size: 11
-    id: lul16
-    glyphs:
-      - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:*' &
-      #- ÄËÏÖÜÉÈÔäëïöüéèôŊŋÁÊÎÛÝáêîûýĜĝÀÌÒàìòÑñÍÓÚíóúÇçĆČĐŠŽćčđšžÙùÕõŞŁŇŘşłňřÅåØøĀĒĪŌŪāēīōūÂâĞğıĎĚŤŮďěťůÆæĲĳŒœÐðŸÿßŐŰőűÞþÃãĂĔĬŎŬăĕĭŏŭĨŨĩũĄĘŃŚŻąęńśżĖėĢĶĻŅģķļņĮŲįųŔŹŕźĊĠċġħŜŝŢţŦŧŴŵŶŷĹĽĺľİ
-      #- " "
-  # Transit board font. Sized for the 256x64 panel split into two 64px-tall
-  # panes: larger size needs fewer rows (see `limit` below), since
-  # rows * ~line_height must stay under 64px.
-  - file: "fonts/Pixolletta8px.ttf"
-  #- file: "fonts/LondonUndergroundRegular.ttf"
     id: pixolletta
-    size: 10
+    size: 16
     glyphs:
-      - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:*' &"
-
+      - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;!?()"'-+/*=%@#[]{}<>|&^~
+      - ÄËÏÖÜÉÈÔäëïöüéèôŊŋÁÊÎÛÝáêîûýĜĝÀÌÒàìòÑñÍÓÚíóúÇçĆČĐŠŽćčđšžÙùÕõŞŁŇŘşłňřÅåØøĀĒĪŌŪāēīōūÂâĞğıĎĚŤŮďěťůÆæĲĳŒœÐðŸÿßŐŰőűÞþÃãĂĔĬŎŬăĕĭŏŭĨŨĩũĄĘŃŚŻąęńśżĖėĢĶĻŅģķļņĮŲįųŔŹŕźĊĠċġħŜŝŢţŦŧŴŵŶŷĹĽĺľİ
+      - " "
+  # Larger font used by the clock_page on the 256x64 jumbo display.
+  - file: "fonts/London Underground Regular.ttf"
+    id: lul16
+    size: 16
+    glyphs:
+      - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789., :&
 time:
   - platform: sntp
     id: sntp_time
@@ -454,42 +438,24 @@ transit_tracker:
   default_route_color: my_orange
   route_display: numbered
   realtime_color: my_red
-  show_realtime_icon: false
-  # Rows per pane. Each pane is 64px tall, so larger fonts need a smaller
-  # limit (rows * ~font line-height must fit in 64px). At size 14, 4 rows
-  # (~56px) fit comfortably; bump the font down / limit up for more arrivals.
-  limit: 6
-  # Split view shows one route per half, so fetch enough trips to fill BOTH
-  # routes: roughly 2 × limit (interleaved across routes by the API).
-  request_trips: 12
+  show_realtime_icon: true
+  limit: 3
+  request_trips: 6  # Fetch enough trips to fill both pages (2 × limit)
   stops:
     - stop_id: "tfl:940GZZLUHTD"
       routes:
-        - "tfl:northern-inbound"
         - "tfl:northern-outbound"
+        - "tfl:northern-inbound"
   styles:
-    - route_id: "tfl:northern-inbound"
-      name: "SB"
-      color: my_orange
     - route_id: "tfl:northern-outbound"
       name: "NB"
       color: my_amber
+    - route_id: "tfl:northern-inbound"
+      name: "SB"
+      color: my_orange
   abbreviations:
-    - from: "Edgware via Bank"
-      to: "Edgware"
-    - from: "Edgware via Charing Cross"
-      to: "Edgware"
-    - from: "Edgware via CX"
-      to: "Edgware"
-    - from: "Golders Green via Bank"
-      to: "Golders Green"
-    - from: "Golders Green via Charing Cross"
-      to: "Golders Green"
-    - from: "Golders Green via CX"
-      to: "Golders Green"
-#    - from: "via CX"
-#      to: "via Charing Cross"
-      
+    - from: "via CX"
+      to: "via Charing Cross"
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
   # #base_url: "wss://tfl.xdca.com/"
   # time_display: "arrival"
