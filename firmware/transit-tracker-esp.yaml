@@ -22,6 +22,7 @@ ota:
 # If the app crashes repeatedly on boot, fall back to a minimal WiFi+OTA-only
 # mode so the device stays re-flashable over the network instead of needing a
 # USB serial flash. (This is what was missing when the 256x64 build hard-faulted.)
+
 safe_mode:
   num_attempts: 5
 
@@ -433,9 +434,9 @@ font:
   - file: "fonts/Pixolletta8px.ttf"
   #- file: "fonts/LondonUndergroundRegular.ttf"
     id: pixolletta
-    size: 12
+    size: 10
     glyphs:
-      - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:*' &
+      - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:*' &"
 
 time:
   - platform: sntp
@@ -457,25 +458,37 @@ transit_tracker:
   # Rows per pane. Each pane is 64px tall, so larger fonts need a smaller
   # limit (rows * ~font line-height must fit in 64px). At size 14, 4 rows
   # (~56px) fit comfortably; bump the font down / limit up for more arrivals.
-  limit: 4
+  limit: 6
   # Split view shows one route per half, so fetch enough trips to fill BOTH
   # routes: roughly 2 × limit (interleaved across routes by the API).
   request_trips: 12
   stops:
     - stop_id: "tfl:940GZZLUHTD"
       routes:
-        - "tfl:northern-outbound"
         - "tfl:northern-inbound"
+        - "tfl:northern-outbound"
   styles:
-    - route_id: "tfl:northern-outbound"
-      name: "NB"
-      color: my_amber
     - route_id: "tfl:northern-inbound"
       name: "SB"
       color: my_orange
+    - route_id: "tfl:northern-outbound"
+      name: "NB"
+      color: my_amber
   abbreviations:
-    - from: "via CX"
-      to: "via Charing Cross"
+    - from: "Edgware via Bank"
+      to: "Edgware"
+    - from: "Edgware via Charing Cross"
+      to: "Edgware"
+    - from: "Edgware via CX"
+      to: "Edgware"
+    - from: "Golders Green via Bank"
+      to: "Golders Green"
+    - from: "Golders Green via Charing Cross"
+      to: "Golders Green"
+    - from: "Golders Green via CX"
+      to: "Golders Green"
+#    - from: "via CX"
+#      to: "via Charing Cross"
       
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
   # #base_url: "wss://redacted.invalid/"
