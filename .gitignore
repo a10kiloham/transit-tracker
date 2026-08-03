@@ -2,3 +2,5 @@
 .env
 .claude
 .vscode
+__pycache__/
+secrets.yaml
