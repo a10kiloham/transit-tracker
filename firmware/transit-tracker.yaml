@@ -379,7 +379,7 @@ transit_tracker:
   id: tracker
 
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
-  # #base_url: "wss://redacted.invalid/"
+  # #base_url: !secret transit_base_url
   # time_display: "arrival"
   # show_units: "long"
   # list_mode: "sequential"

@@ -66,7 +66,10 @@ wifi:
     password: "REDACTED"
 
 api:
-  reboot_timeout: 10s
+  # 0s = never self-reboot waiting for an API client. This device is not in
+  # Home Assistant, so any nonzero timeout makes it boot-loop (reset reason
+  # "Reboot request from api") until safe mode kicks in.
+  reboot_timeout: 0s
 
 http_request:
   verify_ssl: false
@@ -87,7 +90,10 @@ switch:
     id: scroll_headsigns_config
     name: "Scroll Headsigns"
     optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
+    # ALWAYS_ON (not RESTORE_DEFAULT_ON): the YAML is the source of truth, and
+    # NVS may hold a stale "off" saved by older firmware, which a restore mode
+    # would replay over the tracker block's scroll_headsigns: true at boot.
+    restore_mode: ALWAYS_ON
     turn_on_action:
       - lambda: id(tracker).set_scroll_headsigns(true);
     turn_off_action:
@@ -191,7 +197,11 @@ select:
   - platform: template
     id: time_display_config
     optimistic: true
-    restore_value: true
+    # These selects are internal (no name), so nothing can change them at
+    # runtime — restore_value would only replay stale NVS values (or the FIRST
+    # option on a fresh device) over the transit_tracker block at every boot.
+    # Keep initial_option in sync with that block.
+    initial_option: "arrival"
     options:
       - "departure"
       - "arrival"
@@ -202,7 +212,7 @@ select:
   - platform: template
     id: time_units_config
     optimistic: true
-    restore_value: true
+    initial_option: "short"
     options:
       - "long"
       - "short"
@@ -223,7 +233,7 @@ select:
   - platform: template
     id: list_mode_config
     optimistic: true
-    restore_value: true
+    initial_option: "sequential"
     options:
       - "sequential"
       - "nextPerRoute"
@@ -382,7 +392,7 @@ display:
 font:
   - file: "fonts/Pixolletta8px.ttf"
     id: pixolletta
-    size: 10
+    size: 8
     glyphs:
       - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;!?()"'-+/*=%@#[]{}<>|&^~
       - ÄËÏÖÜÉÈÔäëïöüéèôŊŋÁÊÎÛÝáêîûýĜĝÀÌÒàìòÑñÍÓÚíóúÇçĆČĐŠŽćčđšžÙùÕõŞŁŇŘşłňřÅåØøĀĒĪŌŪāēīōūÂâĞğıĎĚŤŮďěťůÆæĲĳŒœÐðŸÿßŐŰőűÞþÃãĂĔĬŎŬăĕĭŏŭĨŨĩũĄĘŃŚŻąęńśżĖėĢĶĻŅģķļņĮŲįųŔŹŕźĊĠċġħŜŝŢţŦŧŴŵŶŷĹĽĺľİ
@@ -395,9 +405,16 @@ time:
 transit_tracker:
   id: tracker
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
-  #base_url: "wss://redacted.invalid/"
+  base_url: !secret transit_base_url
   time_display: "arrival"
-  show_units: "long"
+  # Single 64x32 panel: keep rows narrow — numbered row labels ("1 ") instead
+  # of route names ("Northern"), and short units ("3m" not "3 min"), or the
+  # label/headsign/time columns collide on the 64px width.
+  show_units: "short"
+  route_display: numbered
+  # 4 routes × limit 3 rows per page; trips come back interleaved across
+  # routes, so request enough for every route page to fill.
+  request_trips: 12
   list_mode: "sequential"
   scroll_headsigns: true
   stops:
