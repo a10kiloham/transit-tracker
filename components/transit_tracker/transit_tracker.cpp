@@ -15,6 +15,11 @@ namespace transit_tracker {
 static const char *TAG = "transit_tracker.component";
 
 void TransitTracker::setup() {
+  if (this->web_server_base_ != nullptr) {
+    this->web_server_base_->init();
+    this->web_server_base_->add_handler(this);
+  }
+
   this->ws_client_.onMessage([this](websockets::WebsocketsMessage message) {
     this->on_ws_message_(message);
   });
@@ -504,6 +509,105 @@ void TransitTracker::draw_trip(
     this->display_->start_clipping(headsign_clipping_start, 0, headsign_clipping_end, this->display_->get_height());
     this->display_->print(headsign_clipping_start - scroll_offset, y_offset, this->font_, trip.route_color, trip.headsign.c_str());
     this->display_->end_clipping();
+}
+
+bool TransitTracker::canHandle(AsyncWebServerRequest *request) const {
+  if (request->method() != HTTP_GET)
+    return false;
+#ifdef USE_ESP32
+  char url_buf[AsyncWebServerRequest::URL_BUF_SIZE];
+  return request->url_to(url_buf) == "/dashboard";
+#else
+  return request->url() == ESPHOME_F("/dashboard");
+#endif
+}
+
+void TransitTracker::handleRequest(AsyncWebServerRequest *request) {
+  AsyncResponseStream *stream = request->beginResponseStream("text/html; charset=utf-8");
+
+  stream->print(
+    "<!DOCTYPE html><html><head><meta charset=\"utf-8\">"
+    "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+    "<meta http-equiv=\"refresh\" content=\"10\">"
+    "<title>Transit Tracker</title><style>"
+    "body{font-family:sans-serif;margin:1em;background:#111;color:#eee}"
+    "h1{font-size:1.2em}h2{font-size:1em;margin:1.2em 0 .3em;padding-left:.4em}"
+    "table{border-collapse:collapse;width:100%;max-width:44em}"
+    "th,td{text-align:left;padding:.25em .6em;border-bottom:1px solid #333}"
+    "th{color:#888;font-weight:normal}"
+    "td.live{color:#2f2}td.sched{color:#888}"
+    "</style></head><body><h1>Transit Tracker</h1>");
+
+  // Copy the trips out under the mutex; the web server may run this handler
+  // outside the main loop task.
+  this->schedule_state_.mutex.lock();
+  std::vector<Trip> trips = this->schedule_state_.trips;
+  this->schedule_state_.mutex.unlock();
+
+  auto now = this->rtc_->now();
+
+  // One table per route: configured routes first (in order), then any route
+  // that shows up in the feed but isn't configured.
+  auto route_ids = this->get_configured_route_ids_();
+  for (const auto &trip : trips) {
+    if (std::find(route_ids.begin(), route_ids.end(), trip.route_id) == route_ids.end()) {
+      route_ids.push_back(trip.route_id);
+    }
+  }
+
+  if (route_ids.empty()) {
+    stream->print("<p>No routes configured.</p>");
+  }
+
+  for (const auto &route_id : route_ids) {
+    auto style = this->route_styles_.find(route_id);
+
+    std::string heading = route_id;
+    Color color = this->default_route_color_;
+    if (style != this->route_styles_.end()) {
+      if (!style->second.name.empty()) {
+        heading = style->second.name;
+      }
+      color = style->second.color;
+    }
+
+    stream->print(str_sprintf("<h2 style=\"border-left:6px solid #%02X%02X%02X\">%s <small style=\"color:#888\">(%s)</small></h2>",
+                              color.r, color.g, color.b,
+                              html_escape(heading).c_str(), html_escape(route_id).c_str()));
+    stream->print("<table><tr><th>Route</th><th>Headsign</th><th>Arrival</th><th>Departure</th><th>In</th><th>Type</th></tr>");
+
+    bool any = false;
+    for (const auto &trip : trips) {
+      if (trip.route_id != route_id) {
+        continue;
+      }
+      any = true;
+
+      std::string arrival = ESPTime::from_epoch_local(trip.arrival_time).strftime("%H:%M:%S");
+      std::string departure = ESPTime::from_epoch_local(trip.departure_time).strftime("%H:%M:%S");
+      std::string in_display = now.is_valid()
+        ? this->localization_.fmt_duration_from_now(
+            this->display_departure_times_ ? trip.departure_time : trip.arrival_time, now.timestamp)
+        : "-";
+
+      stream->print(str_sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td class=\"%s\">%s</td></tr>",
+                                html_escape(trip.route_name).c_str(),
+                                html_escape(trip.headsign).c_str(),
+                                arrival.c_str(), departure.c_str(),
+                                html_escape(in_display).c_str(),
+                                trip.is_realtime ? "live" : "sched",
+                                trip.is_realtime ? "live" : "scheduled"));
+    }
+
+    if (!any) {
+      stream->print("<tr><td colspan=\"6\" style=\"color:#888\">No upcoming trips</td></tr>");
+    }
+
+    stream->print("</table>");
+  }
+
+  stream->print("</body></html>");
+  request->send(stream);
 }
 
 bool TransitTracker::draw_guards_() {

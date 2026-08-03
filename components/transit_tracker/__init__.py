@@ -4,14 +4,15 @@ from esphome.components.http_request import CONF_HTTP_REQUEST_ID, HttpRequestCom
 from esphome.components.display import Display
 from esphome.components.font import Font
 from esphome.components.time import RealTimeClock
-from esphome.components import color
+from esphome.components import color, web_server_base
+from esphome.components.web_server_base import CONF_WEB_SERVER_BASE_ID
 from esphome.const import CONF_ID, CONF_DISPLAY_ID, CONF_TIME_ID, CONF_SHOW_UNITS, __version__ as ESPHOME_VERSION, Framework
 from esphome.types import ConfigType
 
 _MINIMUM_ESPHOME_VERSION = "2025.11.0"
 
 DEPENDENCIES = ["network", "display", "font", "time"]
-AUTO_LOAD = ["json", "watchdog"]
+AUTO_LOAD = ["json", "watchdog", "web_server_base"]
 
 transit_tracker_ns = cg.esphome_ns.namespace("transit_tracker")
 TransitTracker = transit_tracker_ns.class_("TransitTracker", cg.Component)
@@ -88,6 +89,9 @@ CONFIG_SCHEMA = cv.All(
             cv.GenerateID(CONF_DISPLAY_ID): cv.use_id(Display),
             cv.GenerateID(CONF_FONT_ID): cv.use_id(Font),
             cv.GenerateID(CONF_TIME_ID): cv.use_id(RealTimeClock),
+            cv.GenerateID(CONF_WEB_SERVER_BASE_ID): cv.use_id(
+                web_server_base.WebServerBase
+            ),
             cv.Optional(CONF_BASE_URL): validate_ws_url,
             cv.Optional(CONF_LIMIT, default=3): cv.positive_int,
             cv.Optional(CONF_REQUEST_TRIPS): cv.positive_int,
@@ -159,6 +163,9 @@ async def to_code(config):
 
     time = await cg.get_variable(config[CONF_TIME_ID])
     cg.add(var.set_rtc(time))
+
+    web_base = await cg.get_variable(config[CONF_WEB_SERVER_BASE_ID])
+    cg.add(var.set_web_server_base(web_base))
 
     if CONF_BASE_URL in config:
         cg.add(var.set_base_url(config[CONF_BASE_URL]))
