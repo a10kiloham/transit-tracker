@@ -29,8 +29,9 @@ safe_mode:
 external_components:
   - source: github://avwuff/ESPHome-HUB75-MatrixDisplayWrapper@4fc1f26500b97a39693cd8af4ba2abb75f83ce0b
     refresh: 0s
-  - source: github://a10kiloham/esphome-transit-tracker@main
-    refresh: 0s
+  - source:
+      type: local
+      path: ../components
   - source: github://tjhorner/esphome-custom-components@c57ffd46fcf30badb2838421e8ff6cbeb9c1dd06
     components: [ lis3dh, project_version ]
     refresh: 0s
@@ -469,10 +470,10 @@ transit_tracker:
         - "tfl:northern-outbound"
   styles:
     - route_id: "tfl:northern-inbound"
-      name: "SB"
+      name: "Northern Line Southbound"
       color: my_orange
     - route_id: "tfl:northern-outbound"
-      name: "NB"
+      name: "Northern Line Northbound"
       color: my_amber
   abbreviations:
     - from: "Edgware via Bank"
