@@ -46,7 +46,7 @@ wifi:
   password: !secret wifi_password
   power_save_mode: "NONE"
   ap:
-    password: "REDACTED"
+    password: !secret wifi_ap_password
 
 api:
   reboot_timeout: 10s

@@ -54,16 +54,16 @@ wifi:
     - ssid: !secret wifi_ssid
       password: !secret wifi_password
     - ssid: "Hoxton"
-      password: "REDACTED"
+      password: !secret wifi_password_hoxton
     - ssid: "H Tree"
-      password: "REDACTED"
+      password: !secret wifi_password_htree
     - ssid: "8KH"
-      password: "REDACTED"
+      password: !secret wifi_password_8kh
     - ssid: "RobK"
-      password: "REDACTED"
+      password: !secret wifi_password_robk
   power_save_mode: "NONE"
   ap:
-    password: "REDACTED"
+    password: !secret wifi_ap_password
 
 api:
   # 0s = never self-reboot waiting for an API client. This device is not in
@@ -102,7 +102,9 @@ switch:
     id: show_line_icons_config
     name: "Show Line Icons"
     optimistic: true
-    restore_mode: RESTORE_DEFAULT_ON
+    # ALWAYS_OFF: YAML is the source of truth (see scroll switch above); this
+    # 64x32 panel drops the leading row labels to widen the headsign viewport.
+    restore_mode: ALWAYS_OFF
     turn_on_action:
       - lambda: id(tracker).set_show_line_icons(true);
     turn_off_action:
@@ -407,11 +409,12 @@ transit_tracker:
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
   base_url: !secret transit_base_url
   time_display: "arrival"
-  # Single 64x32 panel: keep rows narrow — numbered row labels ("1 ") instead
-  # of route names ("Northern"), and short units ("3m" not "3 min"), or the
-  # label/headsign/time columns collide on the 64px width.
+  # Single 64x32 panel: give headsigns the widest possible viewport — no
+  # leading row labels, no realtime icon, and short units ("3m" not "3 min"),
+  # or the label/headsign/time columns collide on the 64px width.
   show_units: "short"
-  route_display: numbered
+  show_line_icons: false
+  show_realtime_icon: false
   # 4 routes × limit 3 rows per page; trips come back interleaved across
   # routes, so request enough for every route page to fill.
   request_trips: 12

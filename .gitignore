@@ -4,3 +4,4 @@
 .vscode
 __pycache__/
 secrets.yaml
+firmware/transit_config_ui.js

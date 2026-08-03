@@ -73,7 +73,7 @@ wifi:
   password: !secret wifi_password
   power_save_mode: "NONE"
   ap:
-    password: "REDACTED"
+    password: !secret wifi_ap_password
 
 api:
   # 0s = never self-reboot when no API client is connected. With a non-zero
