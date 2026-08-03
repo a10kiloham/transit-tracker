@@ -326,12 +326,14 @@ std::vector<std::string> TransitTracker::get_unique_route_ids() const {
 }
 
 int TransitTracker::get_page_count() const {
-  if (this->schedule_state_.trips.empty()) {
-    return 1;
+  // Count the number of unique routes (each route gets its own page). When the
+  // feed is empty, pages fall back to the configured routes (each showing its
+  // route's display name), so count those instead.
+  size_t count = this->get_unique_route_ids().size();
+  if (count == 0) {
+    count = this->get_configured_route_ids_().size();
   }
-  
-  // Count the number of unique routes (each route gets its own page)
-  return this->get_unique_route_ids().size();
+  return count == 0 ? 1 : count;
 }
 
 void TransitTracker::draw_text_centered_(const char *text, Color color) {
@@ -540,17 +542,6 @@ bool TransitTracker::draw_guards_() {
     return false;
   }
 
-  if (this->schedule_state_.trips.empty()) {
-    auto message = "No upcoming arrivals";
-    if (this->display_departure_times_) {
-      message = "No upcoming departures";
-    }
-
-    ESP_LOGD(TAG, "draw_schedule: no trips, showing '%s'", message);
-    this->draw_text_centered_(message, Color(0x252627));
-    return false;
-  }
-
   return true;
 }
 
@@ -645,6 +636,20 @@ void HOT TransitTracker::draw_schedule_region_(int page, int region_x, int regio
   // (arrival-sorted) trip list. Held briefly under the mutex while reading trips.
   this->schedule_state_.mutex.lock();
   auto unique_routes = this->get_unique_route_ids();
+  this->schedule_state_.mutex.unlock();
+
+  // When the feed has no trips at all (e.g. overnight), page over the
+  // configured routes instead so each page can show its route's display name.
+  if (unique_routes.empty()) {
+    unique_routes = this->get_configured_route_ids_();
+  }
+
+  if (unique_routes.empty()) {
+    auto message = this->display_departure_times_ ? "No upcoming departures" : "No upcoming arrivals";
+    ESP_LOGD(TAG, "draw_schedule: no trips and no configured routes, showing '%s'", message);
+    this->draw_text_centered_(message, Color(0x252627));
+    return;
+  }
 
   int effective_page = page;
   if (effective_page >= static_cast<int>(unique_routes.size())) {
@@ -655,17 +660,11 @@ void HOT TransitTracker::draw_schedule_region_(int page, int region_x, int regio
     } else {
       // Explicit page beyond available data — nothing to draw
       ESP_LOGD(TAG, "draw_schedule: page %d beyond available routes (%zu), drawing nothing", page, unique_routes.size());
-      this->schedule_state_.mutex.unlock();
       return;
     }
   }
 
-  std::string target_route_id =
-      effective_page < static_cast<int>(unique_routes.size()) ? unique_routes[effective_page]
-                                                              : unique_routes[0];
-  this->schedule_state_.mutex.unlock();
-
-  this->draw_route_region_(target_route_id, region_x, region_width);
+  this->draw_route_region_(unique_routes[effective_page], region_x, region_width);
 }
 
 void HOT TransitTracker::draw_route_region_(const std::string &target_route_id, int region_x, int region_width) {
@@ -685,8 +684,8 @@ void HOT TransitTracker::draw_route_region_(const std::string &target_route_id, 
   int trips_on_page = trips_to_display.size();
 
   if (trips_on_page == 0) {
-    ESP_LOGD(TAG, "draw_schedule: no trips found for route %s", target_route_id.c_str());
     this->schedule_state_.mutex.unlock();
+    this->draw_route_name_region_(target_route_id, region_x, region_width);
     return;
   }
 
@@ -749,6 +748,59 @@ void HOT TransitTracker::draw_route_region_(const std::string &target_route_id, 
   }
 
   this->schedule_state_.mutex.unlock();
+}
+
+std::vector<std::string> TransitTracker::wrap_text_(const std::string &text, int max_width) {
+  std::vector<std::string> lines;
+  std::string current;
+  int _;
+
+  for (const auto &word : split(text, ' ')) {
+    if (word.empty()) {
+      continue;
+    }
+
+    std::string candidate = current.empty() ? word : current + " " + word;
+
+    int width;
+    this->font_->measure(candidate.c_str(), &width, &_, &_, &_);
+
+    if (width <= max_width || current.empty()) {
+      current = candidate;
+    } else {
+      lines.push_back(current);
+      current = word;
+    }
+  }
+
+  if (!current.empty()) {
+    lines.push_back(current);
+  }
+
+  return lines;
+}
+
+void TransitTracker::draw_route_name_region_(const std::string &route_id, int region_x, int region_width) {
+  auto style = this->route_styles_.find(route_id);
+  bool has_style = style != this->route_styles_.end();
+
+  std::string name = has_style && !style->second.name.empty() ? style->second.name : route_id;
+  Color color = has_style ? style->second.color : this->default_route_color_;
+
+  auto lines = this->wrap_text_(name, region_width);
+
+  int line_height = this->font_->get_ascender() + this->font_->get_descender();
+  int y_offset = (this->display_->get_height() - static_cast<int>(lines.size()) * line_height) / 2;
+  if (y_offset < 0) y_offset = 0;
+
+  int center_x = region_x + region_width / 2;
+
+  this->display_->start_clipping(region_x, 0, region_x + region_width, this->display_->get_height());
+  for (const auto &line : lines) {
+    this->display_->print(center_x, y_offset, this->font_, color, display::TextAlign::TOP_CENTER, line.c_str());
+    y_offset += line_height;
+  }
+  this->display_->end_clipping();
 }
 
 }  // namespace transit_tracker

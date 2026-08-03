@@ -1,5 +1,7 @@
 substitutions:
   project_version: "dev"
+  name: "transit-tracker-tcr"
+  friendly_name: "Transit Tracker TCR"
 
 esphome:
   name: ${name}
@@ -27,6 +29,12 @@ external_components:
 #dashboard_import:
 #  package_import_url: github://a10kiloham/transit-tracker/firmware/transit-tracker.yaml@main
 
+color:
+  - id: c_001AFF
+    hex: "001AFF"
+  - id: c_FF0037
+    hex: "FF0037"
+
 esp32:
   variant: esp32s3
   flash_size: 8MB
@@ -42,8 +50,17 @@ logger:
   level: DEBUG
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  networks:
+    - ssid: !secret wifi_ssid
+      password: !secret wifi_password
+    - ssid: "Hoxton"
+      password: "REDACTED"
+    - ssid: "H Tree"
+      password: "REDACTED"
+    - ssid: "8KH"
+      password: "REDACTED"
+    - ssid: "RobK"
+      password: "REDACTED"
   power_save_mode: "NONE"
   ap:
     password: "REDACTED"
@@ -343,8 +360,8 @@ display:
     double_buffer: true
     update_interval: 32ms
     panel_width: 64
-    panel_height: 64
-    layout_cols: 4
+    panel_height: 32
+    layout_cols: 1
     # We swap the G and B channels in firmware because the 64x32 panel hardware has them reversed
     # g1_pin: 37
     # b1_pin: 39
@@ -377,25 +394,32 @@ time:
 
 transit_tracker:
   id: tracker
-
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
-  # #base_url: "wss://redacted.invalid/"
-  # time_display: "arrival"
-  # show_units: "long"
-  # list_mode: "sequential"
-  # scroll_headsigns: true
-  # stops:
-  #   - stop_id: "tfl:940GZZLUHTD"
-  #     routes:
-  #       - "tfl:northern-outbound"
-  #       - "tfl:northern-inbound"
-  # styles:
-  #   - route_id: "tfl:northern-outbound"
-  #     name: ""
-  #     #color: "c_001AFF"
-  #   - route_id: "tfl:northern-inbound"
-  #     name: ""
-  #     #color: "c_FF0037"
-  # abbreviations:
-  #   - from: "CX"
-  #     to: "Charing Cross"
+  #base_url: "wss://redacted.invalid/"
+  time_display: "arrival"
+  show_units: "long"
+  list_mode: "sequential"
+  scroll_headsigns: true
+  stops:
+    - stop_id: "tfl:940GZZLUTCR"
+      routes:
+        - "tfl:northern-outbound"
+        - "tfl:northern-inbound"
+        - "tfl:central-outbound"
+        - "tfl:central-inbound"
+  styles:
+    - route_id: "tfl:northern-outbound"
+      name: "Northern Line Northbound"
+      color: c_001AFF
+    - route_id: "tfl:northern-inbound"
+      name: "Northern Line Southbound"
+      color: c_FF0037
+    - route_id: "tfl:central-outbound"
+      name: "Central Line Westbound"
+      color: c_001AFF
+    - route_id: "tfl:central-inbound"
+      name: "Central Line Eastbound"
+      color: c_FF0037
+  abbreviations:
+    - from: "CX"
+      to: "Charing Cross"

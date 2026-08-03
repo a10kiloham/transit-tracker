@@ -89,9 +89,10 @@ class TransitTracker : public Component {
     void draw_text_centered_(const char *text, Color color);
     void draw_realtime_icon_(int bottom_right_x, int bottom_right_y, unsigned long now);
 
-    // Runs the pre-render guard checks (network, time, errors, empty schedule),
+    // Runs the pre-render guard checks (network, time, errors),
     // drawing a centered status message when something isn't ready yet.
-    // Returns true when the schedule is ready to be drawn.
+    // Returns true when the schedule is ready to be drawn. An empty schedule
+    // is not an error: regions fall back to drawing the route's display name.
     bool draw_guards_();
 
     // Renders a single trip page (one route) into a horizontal sub-region of the
@@ -102,8 +103,18 @@ class TransitTracker : public Component {
     void draw_schedule_region_(int page, int region_x, int region_width, bool allow_clamp);
 
     // Renders all upcoming trips for a single route into a horizontal sub-region.
-    // Locks the schedule mutex internally; draws nothing if the route has no trips.
+    // Locks the schedule mutex internally; if the route has no upcoming trips
+    // (e.g. overnight), draws the route's display name instead.
     void draw_route_region_(const std::string &route_id, int region_x, int region_width);
+
+    // Draws the route's configured display name (its style `name`, falling back
+    // to the route ID) centered in the region, word-wrapped to fit its width.
+    void draw_route_name_region_(const std::string &route_id, int region_x, int region_width);
+
+    // Greedy word wrap: breaks text on spaces into the fewest lines whose
+    // rendered width fits max_width. A single word wider than max_width still
+    // gets its own line (and is clipped by the display edge).
+    std::vector<std::string> wrap_text_(const std::string &text, int max_width);
 
     // Route IDs in the order they were configured (parsed from schedule_string_),
     // deduplicated. Used by draw_split_schedule() so each pane is pinned to a fixed
