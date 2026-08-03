@@ -8,6 +8,7 @@
 #include "esphome/components/display/display.h"
 #include "esphome/components/font/font.h"
 #include "esphome/components/time/real_time_clock.h"
+#include "esphome/components/web_server_base/web_server_base.h"
 
 #include "schedule_state.h"
 #include "localization.h"
@@ -25,7 +26,7 @@ struct RouteStyle {
   Color color;
 };
 
-class TransitTracker : public Component {
+class TransitTracker : public Component, public AsyncWebHandler {
   public:
     void setup() override;
     void loop() override;
@@ -49,6 +50,12 @@ class TransitTracker : public Component {
     void set_display(display::Display *display) { display_ = display; }
     void set_font(font::Font *font) { font_ = font; }
     void set_rtc(time::RealTimeClock *rtc) { rtc_ = rtc; }
+    void set_web_server_base(web_server_base::WebServerBase *base) { web_server_base_ = base; }
+
+    // AsyncWebHandler: serves a read-only HTML dashboard at /dashboard with a
+    // table per route showing the same trip data rendered on the matrix.
+    bool canHandle(AsyncWebServerRequest *request) const override;
+    void handleRequest(AsyncWebServerRequest *request) override;
 
     void set_base_url(const std::string &base_url) { base_url_ = base_url; }
     void set_feed_code(const std::string &feed_code) { feed_code_ = feed_code; }
@@ -134,6 +141,7 @@ class TransitTracker : public Component {
     display::Display *display_;
     font::Font *font_;
     time::RealTimeClock *rtc_;
+    web_server_base::WebServerBase *web_server_base_{nullptr};
 
     websockets::WebsocketsClient ws_client_{};
 
