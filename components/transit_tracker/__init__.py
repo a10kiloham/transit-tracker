@@ -48,6 +48,7 @@ CONF_TIME_COLOR = "time_color"
 CONF_SHOW_REALTIME_ICON = "show_realtime_icon"
 CONF_SHOW_LINE_ICONS = "show_line_icons"
 CONF_REQUEST_TRIPS = "request_trips"
+CONF_PAGE_INTERVAL = "page_interval"
 
 
 def validate_ws_url(value):
@@ -95,6 +96,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_BASE_URL): validate_ws_url,
             cv.Optional(CONF_LIMIT, default=3): cv.positive_int,
             cv.Optional(CONF_REQUEST_TRIPS): cv.positive_int,
+            cv.Optional(CONF_PAGE_INTERVAL, default="10s"): cv.positive_time_period_milliseconds,
             cv.Optional(CONF_FEED_CODE, default=""): cv.string,
             cv.Optional(CONF_TIME_DISPLAY, default="departure"): cv.one_of(
                 "departure", "arrival"
@@ -194,6 +196,8 @@ async def to_code(config):
 
     if CONF_REQUEST_TRIPS in config:
         cg.add(var.set_request_trips(config[CONF_REQUEST_TRIPS]))
+
+    cg.add(var.set_page_interval(config[CONF_PAGE_INTERVAL].total_milliseconds))
 
     cg.add(var.set_unit_display(config[CONF_SHOW_UNITS]))
 

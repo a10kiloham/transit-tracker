@@ -102,9 +102,9 @@ switch:
     id: show_line_icons_config
     name: "Show Line Icons"
     optimistic: true
-    # ALWAYS_OFF: YAML is the source of truth (see scroll switch above); this
-    # 64x32 panel drops the leading row labels to widen the headsign viewport.
-    restore_mode: ALWAYS_OFF
+    # ALWAYS_ON: YAML is the source of truth (see scroll switch above); with
+    # two chained panels (128px wide) the numbered row labels fit again.
+    restore_mode: ALWAYS_ON
     turn_on_action:
       - lambda: id(tracker).set_show_line_icons(true);
     turn_off_action:
@@ -244,6 +244,27 @@ select:
         lambda: |-
           id(tracker).set_list_mode(id(list_mode_config)->current_option());
 
+number:
+  - platform: template
+    id: walk_time_config
+    name: "Walk Time"
+    icon: "mdi:walk"
+    entity_category: config
+    unit_of_measurement: "min"
+    min_value: 0
+    max_value: 30
+    step: 1
+    mode: box
+    optimistic: true
+    # Named entity, so it IS editable at runtime (device web UI / HA) —
+    # restore_value is meaningful here, unlike the nameless selects above.
+    restore_value: true
+    initial_value: 5
+    on_value:
+      then:
+        lambda: |-
+          id(tracker).set_time_offset((int) (x * 60));
+
 output:
   - platform: template
     id: display_brightness_output
@@ -371,7 +392,7 @@ display:
     board: adafruit-matrix-portal-s3
     double_buffer: true
     update_interval: 32ms
-    panel_width: 64
+    panel_width: 128
     panel_height: 32
     layout_cols: 1
     # We swap the G and B channels in firmware because the 64x32 panel hardware has them reversed
@@ -394,7 +415,7 @@ display:
 font:
   - file: "fonts/Pixolletta8px.ttf"
     id: pixolletta
-    size: 8
+    size: 10
     glyphs:
       - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;!?()"'-+/*=%@#[]{}<>|&^~
       - ÄËÏÖÜÉÈÔäëïöüéèôŊŋÁÊÎÛÝáêîûýĜĝÀÌÒàìòÑñÍÓÚíóúÇçĆČĐŠŽćčđšžÙùÕõŞŁŇŘşłňřÅåØøĀĒĪŌŪāēīōūÂâĞğıĎĚŤŮďěťůÆæĲĳŒœÐðŸÿßŐŰőűÞþÃãĂĔĬŎŬăĕĭŏŭĨŨĩũĄĘŃŚŻąęńśżĖėĢĶĻŅģķļņĮŲįųŔŹŕźĊĠċġħŜŝŢţŦŧŴŵŶŷĹĽĺľİ
@@ -409,15 +430,18 @@ transit_tracker:
   # Config options available, preferably setup in Home Assistant/ESPHome Devices on a per device basis
   base_url: !secret transit_base_url
   time_display: "arrival"
-  # Single 64x32 panel: give headsigns the widest possible viewport — no
-  # leading row labels, no realtime icon, and short units ("3m" not "3 min"),
-  # or the label/headsign/time columns collide on the 64px width.
+  # Two chained panels (128x32): numbered row labels fit again; keep short
+  # units and no realtime icon so headsigns get the rest of the width.
   show_units: "short"
-  show_line_icons: false
+  show_line_icons: true
+  route_display: numbered
   show_realtime_icon: false
-  # 4 routes × limit 3 rows per page; trips come back interleaved across
+  # 4 routes × limit 3 rows per page, plus headroom for the ~2 trips per
+  # route the walk-time cutoff hides; trips come back interleaved across
   # routes, so request enough for every route page to fill.
-  request_trips: 12
+  request_trips: 20
+  # Hold each of the 4 route pages this long before rotating to the next.
+  page_interval: 8s
   list_mode: "sequential"
   scroll_headsigns: true
   stops:
@@ -435,11 +459,17 @@ transit_tracker:
       name: "Northern Line Southbound"
       color: c_FF0037
     - route_id: "tfl:central-outbound"
-      name: "Central Line Westbound"
+      name: "Central Line Eastbound"
       color: c_001AFF
     - route_id: "tfl:central-inbound"
-      name: "Central Line Eastbound"
+      name: "Central Line Westbound"
       color: c_FF0037
   abbreviations:
     - from: "CX"
       to: "Charing Cross"
+    - from: "via Charing Cross"
+      to: ""
+    - from: "via CX"
+      to: ""
+    - from: "via Bank"
+      to: ""

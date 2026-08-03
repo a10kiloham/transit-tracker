@@ -80,6 +80,8 @@ void TransitTracker::dump_config() {
   ESP_LOGCONFIG(TAG, "  Route display mode: %s", this->route_display_mode_ == ROUTE_DISPLAY_NUMBERED ? "numbered" : "route_name");
   ESP_LOGCONFIG(TAG, "  Show realtime icon: %s", this->show_realtime_icon_ ? "true" : "false");
   ESP_LOGCONFIG(TAG, "  Show line icons: %s", this->show_line_icons_ ? "true" : "false");
+  ESP_LOGCONFIG(TAG, "  Time offset (walk time): %ds", this->time_offset_);
+  ESP_LOGCONFIG(TAG, "  Page interval: %ums", (unsigned) this->page_interval_ms_);
 }
 
 void TransitTracker::reconnect() {
@@ -436,10 +438,7 @@ void TransitTracker::draw_trip(
       }
     }
 
-    auto time_display = this->localization_.fmt_duration_from_now(
-      this->display_departure_times_ ? trip.departure_time : trip.arrival_time,
-      rtc_now
-    );
+    auto time_display = this->localization_.fmt_duration_from_now(this->display_time_(trip), rtc_now);
 
     int time_width;
     this->font_->measure(time_display.c_str(), &time_width, &_, &_, &_);
@@ -586,8 +585,7 @@ void TransitTracker::handleRequest(AsyncWebServerRequest *request) {
       std::string arrival = ESPTime::from_epoch_local(trip.arrival_time).strftime("%H:%M:%S");
       std::string departure = ESPTime::from_epoch_local(trip.departure_time).strftime("%H:%M:%S");
       std::string in_display = now.is_valid()
-        ? this->localization_.fmt_duration_from_now(
-            this->display_departure_times_ ? trip.departure_time : trip.arrival_time, now.timestamp)
+        ? this->localization_.fmt_duration_from_now(this->display_time_(trip), now.timestamp)
         : "-";
 
       stream->print(str_sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td class=\"%s\">%s</td></tr>",
@@ -670,12 +668,18 @@ void HOT TransitTracker::draw_schedule(int page) {
     effective_page = page;
     allow_clamp = false;
   } else {
-    // Auto-advance mode (original behavior): advance page when
-    // draw_schedule() hasn't been called for a while (indicates we
-    // were on another display page and just came back)
+    // Auto-advance mode: advance page when draw_schedule() hasn't been
+    // called for a while (indicates we were on another display page and
+    // just came back), and otherwise rotate on a timer while this page is
+    // continuously displayed — the draw-gap trigger alone never fires when
+    // the display sits on the schedule page redrawing every frame.
     unsigned long now_ms = millis();
     if (this->last_draw_time_ != 0 && now_ms - this->last_draw_time_ > 500) {
       this->next_page();
+      this->page_shown_since_ = now_ms;
+    } else if (this->page_interval_ms_ > 0 && now_ms - this->page_shown_since_ >= this->page_interval_ms_) {
+      this->next_page();
+      this->page_shown_since_ = now_ms;
     }
     this->last_draw_time_ = now_ms;
     effective_page = this->current_page_;
@@ -774,14 +778,23 @@ void HOT TransitTracker::draw_schedule_region_(int page, int region_x, int regio
 void HOT TransitTracker::draw_route_region_(const std::string &target_route_id, int region_x, int region_width) {
   this->schedule_state_.mutex.lock();
 
-  // Filter trips to only include the target route, up to limit_
+  uint rtc_now = this->rtc_->now().timestamp;
+
+  // Filter trips to only include the target route, up to limit_. Trips whose
+  // offset-adjusted time is under a minute away are hidden rather than shown
+  // as "due" — with the walk time applied they can no longer be caught.
   std::vector<int> trips_to_display;
   for (int i = 0; i < static_cast<int>(this->schedule_state_.trips.size()); i++) {
-    if (this->schedule_state_.trips[i].route_id == target_route_id) {
-      trips_to_display.push_back(i);
-      if (static_cast<int>(trips_to_display.size()) >= this->limit_) {
-        break;
-      }
+    const auto &trip = this->schedule_state_.trips[i];
+    if (trip.route_id != target_route_id) {
+      continue;
+    }
+    if (this->display_time_(trip) < static_cast<time_t>(rtc_now) + 60) {
+      continue;
+    }
+    trips_to_display.push_back(i);
+    if (static_cast<int>(trips_to_display.size()) >= this->limit_) {
+      break;
     }
   }
 
@@ -795,7 +808,6 @@ void HOT TransitTracker::draw_route_region_(const std::string &target_route_id, 
 
   int nominal_font_height = this->font_->get_ascender() + this->font_->get_descender();
   unsigned long uptime = millis();
-  uint rtc_now = this->rtc_->now().timestamp;
 
   // Pre-compute the widest route label so every row's headsign starts
   // at the same x-coordinate (avoids jitter from proportional digit widths).

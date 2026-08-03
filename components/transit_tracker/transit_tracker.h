@@ -79,6 +79,16 @@ class TransitTracker : public Component, public AsyncWebHandler {
     void set_show_realtime_icon(bool show) { show_realtime_icon_ = show; }
     void set_show_line_icons(bool show) { show_line_icons_ = show; }
 
+    // Walk-time offset: subtracted from every displayed countdown so times
+    // reflect "minutes left after walking to the stop". Trips closer than
+    // one minute post-offset are hidden entirely (they would render as the
+    // "due" string, which by definition can no longer be caught).
+    void set_time_offset(int seconds) { time_offset_ = seconds; }
+
+    // How long each route page is held before auto-advancing to the next
+    // (0 disables time-based rotation).
+    void set_page_interval(uint32_t ms) { page_interval_ms_ = ms; }
+
     void set_sort_order_from_text(const std::string &text);
 
     void set_realtime_color(const Color &color);
@@ -158,11 +168,20 @@ class TransitTracker : public Component, public AsyncWebHandler {
     std::string schedule_string_;
     std::string list_mode_;
     bool display_departure_times_ = true;
+    int time_offset_{0};
+
+    // The timestamp a trip is displayed under (arrival or departure per
+    // config) with the walk-time offset already subtracted.
+    time_t display_time_(const Trip &trip) const {
+      return (display_departure_times_ ? trip.departure_time : trip.arrival_time) - time_offset_;
+    }
     int limit_;
     int request_trips_ = 0;  // 0 means same as limit_
 
     int current_page_ = 0;
     unsigned long last_draw_time_ = 0;
+    uint32_t page_interval_ms_ = 10000;
+    unsigned long page_shown_since_ = 0;
 
     std::map<std::string, std::string> abbreviations_;
     Color default_route_color_ = Color(0x028e51);
